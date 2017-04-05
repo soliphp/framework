@@ -4,8 +4,6 @@
  */
 namespace Soli\Events;
 
-use Closure;
-
 /**
  * 事件原型
  */
