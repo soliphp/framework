@@ -139,6 +139,8 @@ class View implements ViewInterface
 
     /**
      * 是否自动渲染视图
+     *
+     * @return bool
      */
     public function isDisabled()
     {

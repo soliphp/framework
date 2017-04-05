@@ -38,4 +38,11 @@ interface ViewInterface
      * @return string
      */
     public function render($path);
+
+    /**
+     * 是否自动渲染视图
+     *
+     * @return bool
+     */
+    public function isDisabled();
 }
