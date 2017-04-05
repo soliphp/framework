@@ -43,7 +43,7 @@ class EventManager implements EventManagerInterface
      *
      * @param string $name 事件名称，格式为：「事件分组类型:事件名称」
      *                     可以是事件分组类型，也可以是完整的事件名称
-     * @param object|callable|类名 $listener 监听器
+     * @param object|callable|string $listener 监听器（对象、callable、类名）
      */
     public function on($name, $listener)
     {

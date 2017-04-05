@@ -14,6 +14,7 @@ use Soli\Http\Response;
  * @property \Soli\Http\Response $response
  * @property \Soli\Session $session
  * @property \Soli\Session\Flash $flash
+ * @property \Soli\ViewInterface $view
  */
 class Application extends BaseApplication
 {

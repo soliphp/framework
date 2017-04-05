@@ -8,7 +8,9 @@ use Soli\Di\Container;
 
 /**
  * 应用基类
- */
+ *
+ * @property \Soli\BaseDispatcher $dispatcher
+*/
 class BaseApplication extends Component
 {
     const VERSION = '1.0';
@@ -52,6 +54,8 @@ class BaseApplication extends Component
 
     /**
      * 调度器预处理
+     *
+     * @param array $args
      */
     protected function dispatcherPrepare(array $args)
     {
