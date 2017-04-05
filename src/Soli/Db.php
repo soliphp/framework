@@ -42,6 +42,13 @@ class Db
     ];
 
     /**
+     * 外部传入的 MySQL 配置信息
+     *
+     * @var array
+     */
+    protected $config = [];
+
+    /**
      * @param array|\ArrayAccess $config {
      *   @var string adapter
      *   @var string host
@@ -55,22 +62,22 @@ class Db
      */
     public function __construct($config)
     {
-        $this->getConnection($config);
+        $this->config = $config;
+        $this->getConnection();
     }
 
     /**
      * 创建数据库连接
      *
-     * @param array|\ArrayAccess $config
      * @return \PDO
      */
-    protected function getConnection($config)
+    protected function getConnection()
     {
         // 关闭连接
         $this->close();
 
         $mergedConfig = $this->defaultConfig;
-        foreach ($config as $key => $value) {
+        foreach ($this->config as $key => $value) {
             $mergedConfig[$key] = $value;
         }
         $config = $mergedConfig;
@@ -92,7 +99,7 @@ class Db
         // PHP 5.3.9+
         $options = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_TIMEOUT            => 5,
+            PDO::ATTR_TIMEOUT            => 1,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES   => false
         ];
@@ -132,11 +139,38 @@ class Db
      * @param string $sql SQL语句
      * @param array  $binds 绑定数据
      * @param string $fetchMode column|row|all 返回的数据结果类型
+     * @param int    $retries 连接失效时的重复次数
      * @return array|int|string
      *   插入数据返回插入数据的主键ID，更新/删除数据返回影响行数
      *   查询语句则根据 $fetchMode 返回对应类型的结果集
      */
-    public function query($sql, array $binds = [], $fetchMode = 'all')
+    public function query($sql, array $binds = [], $fetchMode = 'all', $retries = 3)
+    {
+        try {
+            return $this->executeInternal($sql, $binds, $fetchMode);
+        } catch (\PDOException $e) {
+            // 2006: MySQL server has gone away
+            // 2013: Lost connection to MySQL server during query
+            if ($retries > 0 && ($e->errorInfo[1] == 2006 || $e->errorInfo[1] == 2013)) {
+                $this->getConnection();
+                return $this->query($sql, $binds, $fetchMode, $retries - 1);
+            } else {
+                throw $e;
+            }
+        }
+    }
+
+    /**
+     * 执行一条 SQL 语句（内部方法）
+     *
+     * @param string $sql SQL语句
+     * @param array  $binds 绑定数据
+     * @param string $fetchMode column|row|all 返回的数据结果类型
+     * @return array|int|string
+     *   插入数据返回插入数据的主键ID，更新/删除数据返回影响行数
+     *   查询语句则根据 $fetchMode 返回对应类型的结果集
+     */
+    protected function executeInternal($sql, array $binds = [], $fetchMode = 'all')
     {
         // prepare -> binds -> execute
         $this->stmt = $this->connection->prepare($sql);
@@ -196,10 +230,24 @@ class Db
 
     /**
      * 开启事务，关闭自动提交
+     *
+     * @param int $retries 连接失效时的重复次数
+     * @return bool
      */
-    public function beginTrans()
+    public function beginTrans($retries = 3)
     {
-        $this->connection->beginTransaction();
+        try {
+            return $this->connection->beginTransaction();
+        } catch (\PDOException $e) {
+            // 2006: MySQL server has gone away
+            // 2013: Lost connection to MySQL server during query
+            if ($retries > 0 && ($e->errorInfo[1] == 2006 || $e->errorInfo[1] == 2013)) {
+                $this->getConnection();
+                return $this->beginTrans($retries - 1);
+            } else {
+                throw $e;
+            }
+        }
     }
 
     /**
