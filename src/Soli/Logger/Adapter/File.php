@@ -75,20 +75,48 @@ class File extends AbstractLogger
      */
     protected function format($data, array $context = [])
     {
-        if (is_string($data)) {
+        // 标量
+        if ($data === null || is_scalar($data)) {
             return $data;
         }
 
-        if (is_object($data)) {
-            if (method_exists($data, '__toString')) {
-                return (string)$data;
-            }
-
-            if ($data instanceof JsonSerializable) {
-                return json_encode($data);
-            }
+        if (is_array($data)) {
+            // PHP_VERSION >= 5.4.0
+            $value = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            return sprintf('[array] (%s)', $value);
         }
 
-        return print_r($data, true);
+        // 对象
+        if (is_object($data)) {
+            // Exception
+            if ($data instanceof \Exception || (PHP_VERSION_ID > 70000 && $data instanceof \Throwable)) {
+                return $this->normalizeException($data);
+            }
+
+            if (method_exists($data, '__toString') && !($data instanceof JsonSerializable)) {
+                $value = (string)$data;
+            } else {
+                $value = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            }
+
+            return sprintf("[object] (%s: %s)", get_class($data), $value);
+        }
+
+        // 资源
+        if (is_resource($data)) {
+            return sprintf('[resource] (%s)', get_resource_type($data));
+        }
+
+        return sprintf('[unknown(%s)] (%s)', gettype($data), print_r($data, true));
+    }
+
+    /**
+     * @param \Exception|\Throwable $e
+     * @return string
+     */
+    public function normalizeException($e)
+    {
+        $head = sprintf('%s(%s): %s', $e->getFile(), $e->getLine(), $e->getMessage()) . "\n";
+        return $head . $e->getTraceAsString();
     }
 }
