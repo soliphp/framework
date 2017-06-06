@@ -69,7 +69,7 @@ class Loader
     {
         $classmap = __DIR__ . '/classmap.php';
         if (is_file($classmap)) {
-            $this->registerClasses(include $classmap);
+            $this->registerClasses(require $classmap);
         }
     }
 

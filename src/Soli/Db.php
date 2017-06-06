@@ -96,7 +96,7 @@ class Db
             $config['charset']
         );
 
-        // PHP 5.3.9+
+        // PHP_VERSION >= 5.3.9
         $options = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_TIMEOUT            => 1,

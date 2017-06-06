@@ -267,7 +267,7 @@ class Response implements ContainerAwareInterface
     /**
      * 设置响应头信息
      *
-     * @param string $header
+     * @param string|array $header
      * @param string $value
      */
     public function setHeaders($header, $value = null)
