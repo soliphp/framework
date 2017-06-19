@@ -12,7 +12,7 @@ use Soli\Events\EventManagerAwareInterface;
 /**
  * 调度器基类
  */
-class BaseDispatcher implements ContainerAwareInterface, EventManagerAwareInterface
+abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAwareInterface
 {
     protected $namespaceName = '';
     protected $handlerName = null;

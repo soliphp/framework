@@ -11,7 +11,7 @@ use Soli\Di\Container;
  *
  * @property \Soli\BaseDispatcher $dispatcher
 */
-class BaseApplication extends Component
+abstract class BaseApplication extends Component
 {
     const VERSION = '1.0';
 
