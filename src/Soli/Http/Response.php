@@ -22,9 +22,9 @@ use Soli\Exception;
  *     'value' => 'hi cookie',
  *     'expire' => 60,
  * ];
- * $response->setCookies($cookie);
+ * $response->setCookie($cookie);
  *
- * $response->setHeaders("Cache-Control: no-cache, must-revalidate");
+ * $response->setHeader("Cache-Control: max-age=0");
  *
  * $response->send();
  *</pre>
@@ -64,7 +64,7 @@ class Response implements ContainerAwareInterface
      *
      * @var string
      */
-    protected $contentType = 'html';
+    protected $contentType = 'text/html';
 
     /**
      * 响应头信息
@@ -128,7 +128,7 @@ class Response implements ContainerAwareInterface
      * @param int $code 状态码
      * @param string $message 状态描述
      */
-    public function setStatusCode($code = 200, $message = null)
+    public function setStatusCode($code, $message = null)
     {
         $this->code = $code;
         $this->message = $message;
@@ -184,11 +184,11 @@ class Response implements ContainerAwareInterface
     /**
      * 设置响应内容
      *
-     * @param string|array|int $content
+     * @param string $content
      */
     public function setContent($content = null)
     {
-        $this->content = $content;
+        $this->content = (string)$content;
     }
 
     /**
@@ -218,30 +218,21 @@ class Response implements ContainerAwareInterface
     }
 
     /**
-     * 获取发送的 cookies 信息, 单个或多个 cookie 信息
+     * 获取响应的 cookies 信息
      *
-     * @example
-     *   $response->getCookies();
-     *   $response->getCookies('cookie_name', null);
-     *
-     * @param string $name 具体某个 cookie 的名称
-     * @param mixed $defaultValue 默认值
-     * @return array|mixed|null
+     * @return array
      */
-    public function getCookies($name = null, $defaultValue = null)
+    public function getCookies()
     {
-        if (empty($name)) {
-            return $this->cookies;
-        }
-        return isset($this->cookies[$name]) ? $this->cookies[$name] : $defaultValue;
+        return $this->cookies;
     }
 
     /**
-     * 设置响应的 cookies 信息
+     * 设置响应的 cookie 信息
      *
-     * @param array $options 单个或多个 cookie 信息
+     * @param array $cookie 单个 cookie 信息
      */
-    public function setCookies(array $options)
+    public function setCookie(array $cookie)
     {
         $default = [
             'name' => '__cookieDefault',
@@ -253,28 +244,29 @@ class Response implements ContainerAwareInterface
             'httpOnly' => true
         ];
 
-        $item = current($options);
-        if (!is_array($item)) {
-            $options = [$options];
-        }
+        $cookie = array_merge($default, $cookie);
+        $this->cookies[$cookie['name']] = $cookie;
+    }
 
-        foreach ($options as $item) {
-            $item = array_merge($default, $item);
-            $this->cookies[$item['name']] = $item;
-        }
+    /**
+     * 获取响应的头信息
+     *
+     * @return array
+     */
+    public function getHeaders()
+    {
+        return $this->headers;
     }
 
     /**
      * 设置响应头信息
      *
-     * @param string|array $header
+     * @param string $header
      * @param string $value
      */
-    public function setHeaders($header, $value = null)
+    public function setHeader($header, $value = null)
     {
-        if (is_array($header)) {
-            $this->headers = array_merge($this->headers, $header);
-        } elseif (is_string($header)) {
+        if (is_string($header)) {
             $this->headers[$header] = $value;
         }
     }
@@ -300,7 +292,7 @@ class Response implements ContainerAwareInterface
         }
 
         $this->code = $code;
-        $this->setHeaders('Location', $location);
+        $this->setHeader('Location', $location);
     }
 
     /**
@@ -325,12 +317,10 @@ class Response implements ContainerAwareInterface
         }
 
         if ($attachment) {
-            $this->setHeaders([
-                'Content-Type: application/octet-stream',
-                'Content-Description: File Transfer',
-                'Content-Disposition: attachment; filename=' . $attachmentName,
-                'Content-Transfer-Encoding: binary',
-            ]);
+            $this->setHeader('Content-Type: application/octet-stream');
+            $this->setHeader('Content-Description: File Transfer');
+            $this->setHeader('Content-Disposition: attachment; filename=' . $attachmentName);
+            $this->setHeader('Content-Transfer-Encoding: binary');
         }
 
         $this->file = $filePath;
