@@ -260,6 +260,11 @@ abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAw
         $this->namespaceName = $namespaceName;
     }
 
+    public function getNamespaceName()
+    {
+        return $this->namespaceName;
+    }
+
     public function setHandlerName($handlerName)
     {
         $this->handlerName = $handlerName;
