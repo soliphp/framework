@@ -42,32 +42,5 @@ abstract class BaseApplication extends Component
     /**
      * 应用程序启动方法
      */
-    public function handle()
-    {
-        $eventManager = $this->getEventManager();
-
-        // 调用 boot 事件
-        if (is_object($eventManager)) {
-            $eventManager->fire('application:boot', $this);
-        }
-    }
-
-    /**
-     * 调度器预处理
-     *
-     * @param array $args
-     */
-    protected function dispatcherPrepare(array $args)
-    {
-        // 设置控制器、方法及参数
-        if (isset($args[0])) {
-            $this->dispatcher->setHandlerName($args[0]);
-        }
-        if (isset($args[1])) {
-            $this->dispatcher->setActionName($args[1]);
-        }
-        if (isset($args[2])) {
-            $this->dispatcher->setParams(array_slice($args, 2));
-        }
-    }
+    abstract public function handle();
 }

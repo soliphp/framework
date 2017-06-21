@@ -38,7 +38,12 @@ class Application extends BaseApplication
      */
     public function handle($uri = null)
     {
-        parent::handle();
+        $eventManager = $this->getEventManager();
+
+        // 调用 boot 事件
+        if (is_object($eventManager)) {
+            $eventManager->fire('application:boot', $this);
+        }
 
         $this->router($uri);
 
@@ -65,7 +70,6 @@ class Application extends BaseApplication
         }
 
         // 调用 beforeSendResponse 事件
-        $eventManager = $this->getEventManager();
         if (is_object($eventManager)) {
             $eventManager->fire('application:beforeSendResponse', $this, $response);
         }
@@ -89,8 +93,16 @@ class Application extends BaseApplication
         $uri = trim($uri, '/');
         $args = $uri ? explode('/', $uri) : [];
 
-        // 设置控制器、方法及参数
-        $this->dispatcherPrepare($args);
+        // 调度器预处理：设置控制器、方法及参数
+        if (isset($args[0])) {
+            $this->dispatcher->setHandlerName($args[0]);
+        }
+        if (isset($args[1])) {
+            $this->dispatcher->setActionName($args[1]);
+        }
+        if (isset($args[2])) {
+            $this->dispatcher->setParams(array_slice($args, 2));
+        }
     }
 
     /**

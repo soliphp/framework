@@ -28,7 +28,12 @@ class Application extends BaseApplication
      */
     public function handle(array $args = null)
     {
-        parent::handle();
+        $eventManager = $this->getEventManager();
+
+        // 调用 boot 事件
+        if (is_object($eventManager)) {
+            $eventManager->fire('application:boot', $this);
+        }
 
         $this->router($args);
 
@@ -42,6 +47,15 @@ class Application extends BaseApplication
             $args = array_slice($_SERVER['argv'], 1);
         }
 
-        $this->dispatcherPrepare($args);
+        // 调度器预处理：设置控制器、方法及参数
+        if (isset($args[0])) {
+            $this->dispatcher->setHandlerName($args[0]);
+        }
+        if (isset($args[1])) {
+            $this->dispatcher->setActionName($args[1]);
+        }
+        if (isset($args[2])) {
+            $this->dispatcher->setParams(array_slice($args, 2));
+        }
     }
 }
