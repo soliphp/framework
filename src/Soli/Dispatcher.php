@@ -36,8 +36,18 @@ class Dispatcher extends BaseDispatcher
         return $this->handlerName;
     }
 
+    public function getPreviousNamespaceName()
+    {
+        return $this->previousNamespaceName;
+    }
+
     public function getPreviousControllerName()
     {
         return $this->previousHandlerName;
+    }
+
+    public function getPreviousActionName()
+    {
+        return $this->previousActionName;
     }
 }

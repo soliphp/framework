@@ -37,9 +37,4 @@ class Dispatcher extends BaseDispatcher
     {
         return $this->handlerName;
     }
-
-    public function getPreviousTaskName()
-    {
-        return $this->previousHandlerName;
-    }
 }

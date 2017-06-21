@@ -22,6 +22,7 @@ abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAw
     protected $handlerSuffix = null;
     protected $actionSuffix = 'Action';
 
+    protected $previousNamespaceName = null;
     protected $previousHandlerName = null;
     protected $previousActionName = null;
 
@@ -228,6 +229,7 @@ abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAw
     public function forward(array $forward)
     {
         if (isset($forward['namespace'])) {
+            $this->previousNamespaceName = $this->namespaceName;
             $this->namespaceName = $forward['namespace'];
         }
 
@@ -278,39 +280,22 @@ abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAw
         return $this->actionName;
     }
 
-    public function getPreviousActionName()
-    {
-        return $this->previousActionName;
-    }
-
     /**
      * 设置 Action 参数
      *
-     * @param string|array $params
-     * @param mixed $value
+     * @param array $params
      */
-    public function setParams($params, $value = null)
+    public function setParams(array $params)
     {
-        if (is_array($params)) {
-            $this->params = $params;
-        } elseif (is_string($params)) {
-            $this->params[$params] = $value;
-        }
+        $this->params = $params;
     }
 
     /**
      * 获取 Action 参数
-     *
-     * @param string|null $name
-     * @param null $defaultValue
-     * @return array|mixed|null
      */
-    public function getParams($name = null, $defaultValue = null)
+    public function getParams()
     {
-        if (empty($name)) {
-            return $this->params;
-        }
-        return isset($this->params[$name]) ? $this->params[$name] : $defaultValue;
+        return $this->params;
     }
 
     /**
