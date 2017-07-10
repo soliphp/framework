@@ -18,9 +18,6 @@ class Filter
     public function sanitize($value, $filter)
     {
         switch ($filter) {
-            case 'email':
-                return filter_var($value, FILTER_SANITIZE_EMAIL);
-
             case 'int':
                 return filter_var($value, FILTER_SANITIZE_NUMBER_INT);
 
@@ -54,8 +51,17 @@ class Filter
             case 'upper':
                 return mb_strtoupper($value);
 
+            case 'email':
+                return filter_var($value, FILTER_SANITIZE_EMAIL);
+
+            case 'url':
+                return filter_var($value, FILTER_SANITIZE_URL);
+
+            case 'special_chars':
+                return filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+
             default:
-                throw new Exception("Sanitize filter $filter is not supported");
+                throw new \Exception("Sanitize filter $filter is not supported");
         }
     }
 }
