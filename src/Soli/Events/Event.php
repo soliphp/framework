@@ -4,6 +4,8 @@
  */
 namespace Soli\Events;
 
+use Closure;
+
 /**
  * 事件原型
  */
@@ -80,18 +82,12 @@ class Event
                 break;
             }
 
-            if (is_callable($listener)) {
+            if ($listener instanceof Closure) {
+                // 调用闭包监听器
                 $status = call_user_func_array($listener, [$this, $this->source, $this->data]);
-            } elseif (is_object($listener)) {
-                if (method_exists($listener, $this->name)) {
-                    // 调用对象监听器
-                    $status = $listener->{$this->name}($this, $this->source, $this->data);
-                }
-            } elseif (is_string($listener) && class_exists($listener)) {
-                // 注意这里的 $this->name 需要是 $listener 的静态方法
-                if (method_exists($listener, $this->name)) {
-                    $status = call_user_func_array([$listener, $this->name], [$this, $this->source, $this->data]);
-                }
+            } elseif (method_exists($listener, $this->name)) {
+                // 调用对象监听器
+                $status = $listener->{$this->name}($this, $this->source, $this->data);
             }
         }
 

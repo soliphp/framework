@@ -12,14 +12,16 @@ namespace Soli\Events;
  *
  *<pre>
  * $eventManager = new \Soli\Events\EventManager();
- * // 将针对 "dispatch" 分组的事件监听器，统一整理到 DispatchEvents 类，一并注册
- * $eventManager->on('dispatch', new DispatchEvents);
  *
  * // 注册具体的某个事件监听器
- * $eventManager->on('application:boot', array(new AppEvents, 'boot'));
+ * $eventManager->on('application:boot', function (\Soli\Events\Event $event, $application) {
+ *     echo "应用已启动\n";
+ * });
  *
- * // 触发事件
- * $eventManager->fire('dispatch:beforeDispatchLoop', $this);
+ * // 也可以将针对 "application" 的事件统一整理到 AppEvents 类，一并注册
+ * $eventManager->on('application', new AppEvents);
+ *
+ * // 触发某个具体事件
  * $eventManager->fire('application:boot', $this);
  *</pre>
  */
@@ -39,11 +41,9 @@ class EventManager implements EventManagerInterface
      * 有分号则认为是为具体的某个事件添加监听器
      * 此规则会在 fire 方法中体现
      *
-     * 关于 callable: @see http://cn2.php.net/manual/zh/language.types.callable.php#example-111
-     *
      * @param string $name 事件名称，格式为：「事件分组类型:事件名称」
      *                     可以是事件分组类型，也可以是完整的事件名称
-     * @param object|callable|string $listener 监听器（对象、callable、类名）
+     * @param \Closure|object $listener 监听器（匿名函数、对象实例）
      */
     public function on($name, $listener)
     {

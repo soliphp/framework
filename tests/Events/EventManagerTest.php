@@ -8,7 +8,7 @@ use Soli\Events\Event;
 
 class EventManagerTest extends TestCase
 {
-    public function testFire()
+    public function testFireByClosure()
     {
         $eventManager = new EventManager;
         // 监听事件
@@ -18,6 +18,18 @@ class EventManagerTest extends TestCase
                 return 'before';
             }
         );
+
+        $myComponent = new MyComponent;
+        $myComponent->setEventManager($eventManager);
+
+        $result = $myComponent->someTask();
+
+        $this->assertStringStartsWith('before, do something', $result);
+    }
+
+    public function testFireByInstance()
+    {
+        $eventManager = new EventManager;
 
         $eventManager->on(
             'my-component',
@@ -29,7 +41,7 @@ class EventManagerTest extends TestCase
 
         $result = $myComponent->someTask();
 
-        $this->assertStringStartsWith('before, do something', $result);
+        $this->assertStringEndsWith('do something, after', $result);
     }
 }
 
