@@ -41,6 +41,9 @@ class Application extends BaseApplication
         return $this->dispatcher->dispatch();
     }
 
+    /**
+     * @param array $args
+     */
     protected function router($args)
     {
         if (empty($args)) {

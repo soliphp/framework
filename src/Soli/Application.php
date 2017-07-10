@@ -80,6 +80,9 @@ class Application extends BaseApplication
         return $response;
     }
 
+    /**
+     * @param string $uri
+     */
     protected function router($uri)
     {
         if (empty($uri)) {
