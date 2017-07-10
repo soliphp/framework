@@ -15,7 +15,7 @@ class View implements ViewInterface
     /** @var \Soli\View\Engine $engine 模版引擎实例 */
     protected $engine;
 
-    /** @var \Soli\View\Engine|Closure $engine 模版引擎定义 */
+    /** @var \Soli\View\Engine|\Closure $engine 模版引擎定义 */
     protected $engineDefinition;
 
     /** @var string $viewsDir 视图文件目录 */
@@ -153,7 +153,7 @@ class View implements ViewInterface
      * 如果 $engineDefinition 是一个 Closure 调用后的返回结果也必须
      * 是一个实现了 EngineInterface 的实例
      *
-     * @param \Soli\View\EngineInterface|Closure $engineDefinition 模版引擎定义
+     * @param \Soli\View\EngineInterface|\Closure $engineDefinition 模版引擎定义
      */
     public function setEngine($engineDefinition)
     {

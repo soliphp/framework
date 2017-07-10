@@ -116,7 +116,7 @@ class Flash implements ContainerAwareInterface
     public function output($remove = true)
     {
         $remove = (bool)$remove;
-        /** @var Session $session */
+        /** @var \Soli\Session $session */
         $session = $this->di->getShared('session');
         $messages = $session->get($this->flashKey, [], $remove);
         if (!empty($messages)) {
