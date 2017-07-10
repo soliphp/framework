@@ -13,7 +13,7 @@ use Soli\Di\ContainerInterface;
 */
 abstract class BaseApplication extends Component
 {
-    const VERSION = '1.0';
+    const VERSION = '1.1.0';
 
     /**
      * 默认注册服务
