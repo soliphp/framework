@@ -5,7 +5,9 @@
 namespace Soli;
 
 use Soli\Di\Container;
+use Soli\Di\ContainerInterface;
 use Soli\Di\ContainerAwareInterface;
+use Soli\Di\ContainerAwareTrait;
 
 /**
  * 模型
@@ -14,8 +16,7 @@ use Soli\Di\ContainerAwareInterface;
  */
 abstract class Model implements ContainerAwareInterface
 {
-    /** @var \Soli\Di\Container $di */
-    protected $di;
+    use ContainerAwareTrait;
 
     /** @var string $connectionService */
     protected $connectionService;
@@ -30,12 +31,12 @@ abstract class Model implements ContainerAwareInterface
     /**
      * Model constructor.
      *
-     * @param \Soli\Di\Container|null $di
+     * @param \Soli\Di\ContainerInterface|null $container
      */
-    final public function __construct(Container $di = null)
+    final public function __construct(ContainerInterface $container = null)
     {
-        if (!is_object($di)) {
-            $di = Container::instance();
+        if (!is_object($container)) {
+            $container = Container::instance();
         }
 
         if (method_exists($this, 'initialize')) {
@@ -43,23 +44,10 @@ abstract class Model implements ContainerAwareInterface
             $this->initialize();
         }
 
-        $di->set(get_called_class(), $this, true);
+        $container->setShared(get_called_class(), $this);
         // 虽然尽量避免使用 new，而是使用 instance() 方法取
         // 但也保证两者拿到的结构是一样的
-        $this->di = $di;
-    }
-
-    public function setDi(Container $di)
-    {
-        $this->di = $di;
-    }
-
-    /**
-     * @return \Soli\Di\Container
-     */
-    public function getDi()
-    {
-        return $this->di;
+        $this->container = $container;
     }
 
     /**
@@ -189,15 +177,15 @@ abstract class Model implements ContainerAwareInterface
      */
     public function __get($name)
     {
-        $di = $this->di;
+        $container = $this->container;
 
         if ($name == 'db') {
-            $this->db = $di->getShared($this->connectionService());
+            $this->db = $container->getShared($this->connectionService());
             return $this->db;
         }
 
-        if ($di->has($name)) {
-            $this->$name = $di->getShared($name);
+        if ($container->has($name)) {
+            $this->$name = $container->getShared($name);
             // 将找到的服务添加到属性, 以便下次直接调用
             return $this->$name;
         }

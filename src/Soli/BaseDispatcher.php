@@ -4,8 +4,8 @@
  */
 namespace Soli;
 
-use Soli\Di\Container;
 use Soli\Di\ContainerAwareInterface;
+use Soli\Di\ContainerAwareTrait;
 use Soli\Events\EventManagerInterface;
 use Soli\Events\EventManagerAwareInterface;
 
@@ -14,6 +14,8 @@ use Soli\Events\EventManagerAwareInterface;
  */
 abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAwareInterface
 {
+    use ContainerAwareTrait;
+
     protected $namespaceName = '';
     protected $handlerName = null;
     protected $actionName = null;
@@ -34,11 +36,6 @@ abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAw
     protected $finished = null;
 
     /**
-     * @var \Soli\Di\Container
-     */
-    protected $di;
-
-    /**
      * @var \Soli\Events\EventManager
      */
     protected $eventManager;
@@ -57,19 +54,6 @@ abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAw
     public function __construct()
     {
         $this->params = [];
-    }
-
-    public function setDi(Container $di)
-    {
-        $this->di = $di;
-    }
-
-    /**
-     * @return \Soli\Di\Container
-     */
-    public function getDi()
-    {
-        return $this->di;
     }
 
     public function setEventManager(EventManagerInterface $eventManager)
@@ -181,7 +165,7 @@ abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAw
                 break;
             }
 
-            $handler = $this->di->getShared($handlerName);
+            $handler = $this->container->getShared($handlerName);
 
             // 初始化
             if (method_exists($handler, 'initialize')) {

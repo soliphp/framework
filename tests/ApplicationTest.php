@@ -11,14 +11,14 @@ class ApplicationTest extends TestCase
 {
     protected function createApplication()
     {
-        $di = new Container();
-        $di->set('dispatcher', function () use ($di) {
+        $container = new Container();
+        $container->set('dispatcher', function () use ($container) {
             $dispatcher = new Dispatcher();
             $dispatcher->setNamespaceName("\\Soli\\Tests\\Handlers\\");
             return $dispatcher;
         });
 
-        $app = new Application($di);
+        $app = new Application($container);
 
         return $app;
     }

@@ -14,15 +14,15 @@ class DispatcherTest extends TestCase
 
     public function setUp()
     {
-        $di = new Container;
+        $container = new Container;
         // 把 dispatcher 扔进容器，供 TestController 使用
-        $di->set('dispatcher', function () use ($di) {
+        $container->set('dispatcher', function () use ($container) {
             $dispatcher = new Dispatcher();
             $dispatcher->setNamespaceName("\\Soli\\Tests\\Handlers\\");
             return $dispatcher;
         });
 
-        $this->dispatcher = $di->getShared('dispatcher');
+        $this->dispatcher = $container->getShared('dispatcher');
     }
 
     public function testDispatch()

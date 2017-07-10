@@ -4,8 +4,8 @@
  */
 namespace Soli\Http;
 
-use Soli\Di\Container;
 use Soli\Di\ContainerAwareInterface;
+use Soli\Di\ContainerAwareTrait;
 use Soli\ViewInterface;
 use Soli\Exception;
 
@@ -31,6 +31,8 @@ use Soli\Exception;
  */
 class Response implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     /**
      * 是否已发送响应信息
      *
@@ -88,11 +90,6 @@ class Response implements ContainerAwareInterface
     protected $file = null;
 
     /**
-     * @var \Soli\Di\Container
-     */
-    protected $di;
-
-    /**
      * Response constructor.
      *
      * @param string $content 响应内容
@@ -107,19 +104,6 @@ class Response implements ContainerAwareInterface
         if ($code !== null) {
             $this->setStatusCode($code, $message);
         }
-    }
-
-    public function setDi(Container $di)
-    {
-        $this->di = $di;
-    }
-
-    /**
-     * @return \Soli\Di\Container
-     */
-    public function getDi()
-    {
-        return $this->di;
     }
 
     /**
@@ -280,8 +264,8 @@ class Response implements ContainerAwareInterface
     public function redirect($location = null, $code = 302)
     {
         // disable view
-        if ($this->di->has('view')) {
-            $view = $this->di->getShared('view');
+        if ($this->container->has('view')) {
+            $view = $this->container->getShared('view');
             if ($view instanceof ViewInterface) {
                 $view->disable();
             }

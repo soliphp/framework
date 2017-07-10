@@ -4,8 +4,6 @@
  */
 namespace Soli\Di;
 
-use Psr\Container\ContainerInterface;
-
 /**
  * 依赖注入容器
  *
@@ -16,28 +14,28 @@ use Psr\Container\ContainerInterface;
 class Container implements ContainerInterface, \ArrayAccess
 {
     /**
-     * Container 实例
+     * 存储容器对象实例
      *
-     * @var \Soli\Di\Container
+     * @var \Soli\Di\ContainerInterface
      */
     public static $instance;
 
     /**
-     * services 服务容器
+     * 存储所有注册的服务
      *
-     * @var array
+     * @var \Soli\Di\ServiceInterface[]
      */
     protected static $services = [];
 
     /**
-     * shared 服务实例
+     * 存储 getShared 方法返回的服务实例（服务定义的执行结果）
      *
      * @var array
      */
     protected static $sharedInstances = [];
 
     /**
-     * 初始化 Container 默认实例
+     * 初始化容器默认实例
      */
     public function __construct()
     {
@@ -48,7 +46,9 @@ class Container implements ContainerInterface, \ArrayAccess
     }
 
     /**
-     * 获取 Container 实例
+     * 获取容器对象实例
+     *
+     * @return \Soli\Di\ContainerInterface
      */
     public static function instance()
     {
@@ -58,82 +58,85 @@ class Container implements ContainerInterface, \ArrayAccess
     /**
      * 注册一个服务到容器
      *
-     * @param string $name
-     * @param mixed $definition 服务定义, 类名|对象(实例化后的对象或Closure)|数组
-     * @param bool $shared 为 true 则注册单例服务
-     * @return Service
+     * @param string $id 服务标识
+     * @param mixed $definition 服务定义
+     * @return \Soli\Di\ServiceInterface
      */
-    public function set($name, $definition, $shared = false)
+    public function set($id, $definition)
     {
-        $service = new Service($name, $definition, $shared);
-        static::$services[$name] = $service;
+        $service = new Service($id, $definition, false);
+        static::$services[$id] = $service;
         return $service;
     }
 
     /**
      * 注册单例服务
      *
-     * @param string $name
+     * @param string $id 服务标识
      * @param mixed $definition 服务定义
-     * @return Service
+     * @return \Soli\Di\ServiceInterface
      */
-    public function setShared($name, $definition)
+    public function setShared($id, $definition)
     {
-        return $this->set($name, $definition, true);
+        $service = new Service($id, $definition, true);
+        static::$services[$id] = $service;
+        return $service;
     }
 
     /**
-     * 从容器中获取一个服务, 解析服务定义
-     * 如果不存在则自动注册
+     * 从容器中获取一个服务
      *
-     * @param string $name 服务名称
+     * 当传入未注册为服务标识的类名时，自动将类名注册为服务，并返回类实例
+     *
+     * @param string $id 服务标识|类名
      * @param array $parameters 参数
      * @return mixed
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
-    public function get($name, array $parameters = null)
+    public function get($id, array $parameters = null)
     {
-        if (isset(static::$services[$name])) {
-            /** @var Service $service 服务实例 */
-            $service = static::$services[$name];
-        } elseif (class_exists($name)) {
-            // 通过类名自动注册并获取服务实例
-            $service = $this->set($name, $name);
+        if (isset(static::$services[$id])) {
+            /** @var \Soli\Di\ServiceInterface $service 服务实例 */
+            $service = static::$services[$id];
+        } elseif (class_exists($id)) {
+            // 自动将类名注册为服务
+            $service = $this->setShared($id, $id);
         } else {
-            throw new \Exception("Service '$name' wasn't found in the dependency injection container");
+            throw new \InvalidArgumentException("Service '$id' wasn't found in the dependency injection container");
         }
 
-        // 解析服务, 返回实例
-        // 如果一个服务注册时使用 shared, 会返回一个 shared 实例, 逻辑在解析方法中体现
-        $instance = $service->resolve($parameters);
+        // 解析服务, 返回服务定义的执行结果
+        $instance = $service->resolve($parameters, $this);
 
         // 当前服务实现了 ContainerAwareInterface 接口时，自动为其设置容器
         if ($instance instanceof ContainerAwareInterface) {
-            $instance->setDi($this);
+            $instance->setContainer($this);
         }
 
         return $instance;
     }
 
     /**
-     * 当一个服务未被注册为单例服务，但是又想获取 shared 实例时
+     * 获取单例服务
      *
-     * @param string $name 服务名称
+     * 当一个服务未被注册为单例服务，使用此方法也可以获取单例服务
+     *
+     * @param string $id 服务标识
      * @param array $parameters 参数
      * @return mixed
      */
-    public function getShared($name, array $parameters = null)
+    public function getShared($id, array $parameters = null)
     {
         // 检查是否已解析
-        if (isset(static::$sharedInstances[$name])) {
-            return static::$sharedInstances[$name];
+        if (isset(static::$sharedInstances[$id])) {
+            return static::$sharedInstances[$id];
         }
 
         // 解析服务实例
-        $service = $this->get($name, $parameters);
+        $service = $this->get($id, $parameters);
 
         // 保存到 shared 实例列表
-        static::$sharedInstances[$name] = $service;
+        static::$sharedInstances[$id] = $service;
 
         return $service;
     }
@@ -141,30 +144,46 @@ class Container implements ContainerInterface, \ArrayAccess
     /**
      * 查询容器中是否存在某个服务
      *
-     * @param string $name 服务名称
+     * @param string $id 服务标识
      * @return bool
      */
-    public function has($name)
+    public function has($id)
     {
-        return isset(static::$services[$name]);
+        return isset(static::$services[$id]);
     }
 
     /**
      * 从服务容器中删除一个服务
      *
-     * @param string $name 服务名称
+     * @param string $id 服务标识
      * @return void
      */
-    public function remove($name)
+    public function remove($id)
     {
-        unset(static::$services[$name]);
-        unset(static::$sharedInstances[$name]);
+        unset(static::$services[$id]);
+        unset(static::$sharedInstances[$id]);
+    }
+
+    /**
+     * 获取容器中的某个 Service 对象实例
+     *
+     * @param string $id 服务标识
+     * @return \Soli\Di\ServiceInterface
+     * @throws \InvalidArgumentException
+     */
+    public function getService($id)
+    {
+        if (isset(static::$services[$id])) {
+            return static::$services[$id];
+        }
+
+        throw new \InvalidArgumentException("Service '$id' wasn't found in the dependency injection container");
     }
 
     /**
      * 获取容器中的所有服务
      *
-     * @return array
+     * @return \Soli\Di\ServiceInterface[]
      */
     public function getServices()
     {
@@ -173,23 +192,38 @@ class Container implements ContainerInterface, \ArrayAccess
 
     // 实现 \ArrayAccess 方法
 
-    public function offsetExists($name)
+    public function offsetExists($id)
     {
-        return $this->has($name);
+        return $this->has($id);
     }
 
-    public function offsetGet($name)
+    public function offsetGet($id)
     {
-        return $this->getShared($name);
+        return $this->getShared($id);
     }
 
-    public function offsetSet($name, $definition)
+    public function offsetSet($id, $definition)
     {
-        return $this->set($name, $definition, true);
+        $this->setShared($id, $definition);
     }
 
-    public function offsetUnset($name)
+    public function offsetUnset($id)
     {
-        return false;
+        $this->remove($id);
+    }
+
+    /**
+     * 允许将服务标识作为属性名访问
+     *
+     *<code>
+     * $container->someService;
+     *</code>
+     *
+     * @param string $id 服务标识
+     * @return mixed
+     */
+    public function __get($id)
+    {
+        return $this->getShared($id);
     }
 }

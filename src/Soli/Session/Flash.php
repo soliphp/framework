@@ -4,8 +4,8 @@
  */
 namespace Soli\Session;
 
-use Soli\Di\Container;
 use Soli\Di\ContainerAwareInterface;
+use Soli\Di\ContainerAwareTrait;
 use Soli\Session;
 
 /**
@@ -13,6 +13,8 @@ use Soli\Session;
  */
 class Flash implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     protected $cssClasses = [
         'error'   => 'error',
         'notice'  => 'notice',
@@ -25,11 +27,6 @@ class Flash implements ContainerAwareInterface
     protected $flashKey = '__flashMessages';
 
     /**
-     * @var \Soli\Di\Container
-     */
-    protected $di;
-
-    /**
      * Flash constructor.
      *
      * @param array $cssClasses 消息样式
@@ -39,19 +36,6 @@ class Flash implements ContainerAwareInterface
         if (is_array($cssClasses)) {
             $this->setCssClasses($cssClasses);
         }
-    }
-
-    public function setDi(Container $di)
-    {
-        $this->di = $di;
-    }
-
-    /**
-     * @return \Soli\Di\Container
-     */
-    public function getDi()
-    {
-        return $this->di;
     }
 
     /**
@@ -101,7 +85,7 @@ class Flash implements ContainerAwareInterface
     public function message($type, $message)
     {
         if (isset($this->cssClasses[$type])) {
-            $session = $this->di->getShared('session');
+            $session = $this->container->getShared('session');
             $html = '<div class="%s">%s</div>';
             $this->messages[] = sprintf($html, $this->cssClasses[$type], $message);
             $session->set($this->flashKey, $this->messages);
@@ -117,7 +101,7 @@ class Flash implements ContainerAwareInterface
     {
         $remove = (bool)$remove;
         /** @var \Soli\Session $session */
-        $session = $this->di->getShared('session');
+        $session = $this->container->getShared('session');
         $messages = $session->get($this->flashKey, [], $remove);
         if (!empty($messages)) {
             foreach ($messages as $message) {

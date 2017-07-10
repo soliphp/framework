@@ -4,7 +4,7 @@
  */
 namespace Soli;
 
-use Soli\Di\Container;
+use Soli\Di\ContainerInterface;
 
 /**
  * 应用基类
@@ -23,18 +23,18 @@ abstract class BaseApplication extends Component
     /**
      * 应用初始化
      *
-     * @param \Soli\Di\Container $di
+     * @param \Soli\Di\ContainerInterface $container
      */
-    public function __construct(Container $di = null)
+    public function __construct(ContainerInterface $container = null)
     {
-        if (!is_object($di)) {
-            $di = $this->getDi();
+        if (!is_object($container)) {
+            $container = $this->getContainer();
         }
 
         foreach ($this->defaultServices as $name => $service) {
             // 允许自定义同名的 Service 覆盖默认的 Service
-            if (!$di->has($name)) {
-                $di->set($name, $service, true);
+            if (!$container->has($name)) {
+                $container->setShared($name, $service);
             }
         }
     }

@@ -4,33 +4,17 @@
  */
 namespace Soli\Http;
 
-use Soli\Di\Container;
 use Soli\Di\ContainerAwareInterface;
+use Soli\Di\ContainerAwareTrait;
 
 /**
  * 请求
  */
 class Request implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     protected $filter;
-
-    /**
-     * @var \Soli\Di\Container
-     */
-    protected $di;
-
-    public function setDi(Container $di)
-    {
-        $this->di = $di;
-    }
-
-    /**
-     * @return \Soli\Di\Container
-     */
-    public function getDi()
-    {
-        return $this->di;
-    }
 
     /* 请求参数 */
 
@@ -201,7 +185,7 @@ class Request implements ContainerAwareInterface
         $value = $source[$name];
         if ($filter !== null) {
             if (!is_object($this->filter)) {
-                $this->filter = $this->di->getShared('filter');
+                $this->filter = $this->container->getShared('filter');
             }
             $value = $this->filter->sanitize($value, $filter);
         }

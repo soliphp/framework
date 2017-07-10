@@ -8,30 +8,30 @@ use Soli\Component;
 
 class ComponentTest extends TestCase
 {
-    protected $di;
+    protected $container;
 
     public function setUp()
     {
-        $di = new Container;
-        $di->remove('some_service');
+        $container = new Container;
+        $container->remove('some_service');
 
         $ao = new \ArrayObject;
         $ao->name = 'Injectable';
-        $di['some_service'] = $ao;
+        $container['some_service'] = $ao;
 
-        $this->di = $di;
+        $this->container = $container;
     }
 
     public function testInjectionAware()
     {
-        $myComponent = $this->di->getShared('Soli\Tests\MyComponent');
+        $myComponent = $this->container->getShared('Soli\Tests\MyComponent');
 
         // 获取容器
-        $di = $myComponent->di;
+        $container = $myComponent->container;
         // 获取容器中的服务
         $s = $myComponent->some_service;
 
-        $this->assertInstanceOf(Container::class, $di);
+        $this->assertInstanceOf(Container::class, $container);
         $this->assertEquals('Injectable', $s->name);
     }
 }
