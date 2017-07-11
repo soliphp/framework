@@ -13,7 +13,7 @@ class Filter
      * @param mixed $value
      * @param string $filter
      * @return mixed
-     * @throws \Soli\Exception
+     * @throws \InvalidArgumentException
      */
     public function sanitize($value, $filter)
     {
@@ -61,7 +61,7 @@ class Filter
                 return filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
 
             default:
-                throw new \Exception("Sanitize filter $filter is not supported");
+                throw new \InvalidArgumentException("Sanitize filter $filter is not supported");
         }
     }
 }

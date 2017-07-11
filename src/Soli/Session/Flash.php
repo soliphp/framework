@@ -6,7 +6,6 @@ namespace Soli\Session;
 
 use Soli\Di\ContainerAwareInterface;
 use Soli\Di\ContainerAwareTrait;
-use Soli\Session;
 
 /**
  * 闪存消息

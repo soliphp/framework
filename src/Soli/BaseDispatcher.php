@@ -16,7 +16,7 @@ abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAw
 {
     use ContainerAwareTrait;
 
-    protected $namespaceName = '';
+    protected $namespaceName = null;
     protected $handlerName = null;
     protected $actionName = null;
     protected $params = null;
