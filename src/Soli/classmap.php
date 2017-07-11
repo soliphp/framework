@@ -24,6 +24,7 @@ return [
     'Soli\\Events\\Event'                      => __DIR__ . '/Events/Event.php',
     'Soli\\Events\\EventManager'               => __DIR__ . '/Events/EventManager.php',
     'Soli\\Events\\EventManagerAwareInterface' => __DIR__ . '/Events/EventManagerAwareInterface.php',
+    'Soli\\Events\\EventManagerAwareTrait'     => __DIR__ . '/Events/EventManagerAwareTrait.php',
     'Soli\\Events\\EventManagerInterface'      => __DIR__ . '/Events/EventManagerInterface.php',
     'Soli\\Filter'                             => __DIR__ . '/Filter.php',
     'Soli\\Http\\Request'                      => __DIR__ . '/Http/Request.php',

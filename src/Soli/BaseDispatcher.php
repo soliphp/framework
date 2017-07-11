@@ -6,8 +6,8 @@ namespace Soli;
 
 use Soli\Di\ContainerAwareInterface;
 use Soli\Di\ContainerAwareTrait;
-use Soli\Events\EventManagerInterface;
 use Soli\Events\EventManagerAwareInterface;
+use Soli\Events\EventManagerAwareTrait;
 
 /**
  * 调度器基类
@@ -15,6 +15,8 @@ use Soli\Events\EventManagerAwareInterface;
 abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAwareInterface
 {
     use ContainerAwareTrait;
+
+    use EventManagerAwareTrait;
 
     protected $namespaceName = null;
     protected $handlerName = null;
@@ -35,11 +37,6 @@ abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAw
      */
     protected $finished = null;
 
-    /**
-     * @var \Soli\Events\EventManager
-     */
-    protected $eventManager;
-
     const EXCEPTION_CYCLIC_ROUTING = 1;
 
     const EXCEPTION_HANDLER_NOT_FOUND = 2;
@@ -54,19 +51,6 @@ abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAw
     public function __construct()
     {
         $this->params = [];
-    }
-
-    public function setEventManager(EventManagerInterface $eventManager)
-    {
-        $this->eventManager = $eventManager;
-    }
-
-    /**
-     * @return \Soli\Events\EventManager
-     */
-    public function getEventManager()
-    {
-        return $this->eventManager;
     }
 
     /**
