@@ -4,8 +4,6 @@
  */
 namespace Soli\Events;
 
-use Soli\Events\EventManagerInterface;
-
 /**
  * EventManagerAwareTrait
  */
