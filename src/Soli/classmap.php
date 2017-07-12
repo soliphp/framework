@@ -32,6 +32,8 @@ return [
     'Soli\\Loader'                             => __DIR__ . '/Loader.php',
     'Soli\\Logger\\Adapter\\File'              => __DIR__ . '/Logger/Adapter/File.php',
     'Soli\\Model'                              => __DIR__ . '/Model.php',
+    'Soli\\Router\\Simple'                     => __DIR__ . '/Router/Simple.php',
+    'Soli\\RouterInterface'                    => __DIR__ . '/RouterInterface.php',
     'Soli\\Session'                            => __DIR__ . '/Session.php',
     'Soli\\Session\\Flash'                     => __DIR__ . '/Session/Flash.php',
     'Soli\\View'                               => __DIR__ . '/View.php',

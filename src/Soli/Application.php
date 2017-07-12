@@ -9,6 +9,7 @@ use Soli\Http\Response;
 /**
  * 应用
  *
+ * @property \Soli\RouterInterface $router
  * @property \Soli\Dispatcher $dispatcher
  * @property \Soli\Http\Request $request
  * @property \Soli\Http\Response $response
@@ -22,6 +23,7 @@ class Application extends BaseApplication
      * 默认注册服务
      */
     protected $defaultServices = [
+        'router'     => \Soli\Router\Simple::class,
         'dispatcher' => \Soli\Dispatcher::class,
         'request'    => \Soli\Http\Request::class,
         'response'   => \Soli\Http\Response::class,
@@ -39,13 +41,27 @@ class Application extends BaseApplication
     public function handle($uri = null)
     {
         $eventManager = $this->getEventManager();
+        $router = $this->router;
+        $dispatcher = $this->dispatcher;
+        $response = $this->response;
 
         // 调用 boot 事件
         if (is_object($eventManager)) {
             $eventManager->fire('application:boot', $this);
         }
 
-        $this->router($uri);
+        $router->handle($uri);
+
+        // 调度器预处理：设置控制器、方法及参数
+        if ($router->getControllerName()) {
+            $dispatcher->setHandlerName($router->getControllerName());
+        }
+        if ($router->getActionName()) {
+            $dispatcher->setActionName($router->getActionName());
+        }
+        if ($router->getParams()) {
+            $dispatcher->setParams($router->getParams());
+        }
 
         // 不自动渲染视图的四种方式:
         // 1. 返回 Response 实例
@@ -54,12 +70,11 @@ class Application extends BaseApplication
         // 4. 禁用视图
 
         // 执行调度
-        $returnedResponse = $this->dispatcher->dispatch();
+        $returnedResponse = $dispatcher->dispatch();
 
         if ($returnedResponse instanceof Response) {
             $response = $returnedResponse;
         } else {
-            $response = $this->response;
             if (is_string($returnedResponse)) {
                 // 作为响应内容
                 $response->setContent($returnedResponse);
@@ -81,40 +96,16 @@ class Application extends BaseApplication
     }
 
     /**
-     * @param string $uri
-     */
-    protected function router($uri)
-    {
-        if (empty($uri)) {
-            $uri = isset($_GET['_uri']) ? $_GET['_uri'] : $_SERVER['REQUEST_URI'];
-        }
-        $uri = filter_var($uri, FILTER_SANITIZE_URL);
-
-        // 去除 query string
-        list($uri) = explode('?', $uri);
-        // 去除左右斜杠，并以斜杠切分为数组
-        $uri = trim($uri, '/');
-        $args = $uri ? explode('/', $uri) : [];
-
-        // 调度器预处理：设置控制器、方法及参数
-        if (isset($args[0])) {
-            $this->dispatcher->setHandlerName($args[0]);
-        }
-        if (isset($args[1])) {
-            $this->dispatcher->setActionName($args[1]);
-        }
-        if (isset($args[2])) {
-            $this->dispatcher->setParams(array_slice($args, 2));
-        }
-    }
-
-    /**
      * 获取视图自动渲染内容
      *
      * @return string
      */
     protected function viewRender()
     {
+        if (!$this->container->has('view')) {
+            return null;
+        }
+
         // 视图实例
         $view = $this->view;
 
