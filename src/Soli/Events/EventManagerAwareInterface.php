@@ -19,7 +19,7 @@ interface EventManagerAwareInterface
     /**
      * 获取事件管理器
      *
-     * @return \Soli\Events\EventManager
+     * @return \Soli\Events\EventManagerInterface
      */
     public function getEventManager();
 }

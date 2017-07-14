@@ -16,7 +16,7 @@ use Soli\Events\EventManagerAwareInterface;
  * 通过 $this->{serviceName} 访问属性的方式访问所有注册到容器中的服务
  *
  * @property \Soli\Di\ContainerInterface $container
- * @property \Soli\Events\EventManager $eventManager
+ * @property \Soli\Events\EventManagerInterface $eventManager
  */
 class Component implements ContainerAwareInterface, EventManagerAwareInterface
 {
@@ -26,7 +26,7 @@ class Component implements ContainerAwareInterface, EventManagerAwareInterface
     protected $diContainer;
 
     /**
-     * @var \Soli\Events\EventManager
+     * @var \Soli\Events\EventManagerInterface
      */
     protected $eventManager;
 
@@ -52,7 +52,7 @@ class Component implements ContainerAwareInterface, EventManagerAwareInterface
     }
 
     /**
-     * @return \Soli\Events\EventManager
+     * @return \Soli\Events\EventManagerInterface
      */
     public function getEventManager()
     {
