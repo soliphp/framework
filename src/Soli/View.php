@@ -12,10 +12,10 @@ use Soli\View\EngineInterface;
  */
 class View implements ViewInterface
 {
-    /** @var \Soli\View\Engine $engine 模版引擎实例 */
+    /** @var \Soli\View\EngineInterface $engine 模版引擎实例 */
     protected $engine;
 
-    /** @var \Soli\View\Engine|\Closure $engine 模版引擎定义 */
+    /** @var \Soli\View\EngineInterface|\Closure $engine 模版引擎定义 */
     protected $engineDefinition;
 
     /** @var string $viewsDir 视图文件目录 */

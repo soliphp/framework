@@ -13,7 +13,7 @@ interface EventManagerInterface
      * 注册某个事件的监听器
      *
      * @param string $name 事件名称
-     * @param object|callable $listener 监听器
+     * @param \Closure|object $listener 监听器
      */
     public function on($name, $listener);
 

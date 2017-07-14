@@ -11,7 +11,7 @@ use Soli\ViewInterface;
  */
 abstract class Engine
 {
-    /** @var \Soli\View\Engine $engine 模版引擎实例 */
+    /** @var object $engine 模版引擎实例 */
     protected $engine;
 
     /** @var \Soli\ViewInterface $view 视图实例 */

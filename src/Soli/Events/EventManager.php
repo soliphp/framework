@@ -66,9 +66,9 @@ class EventManager implements EventManagerInterface
     /**
      * 激活某个事件的监听器
      *
-     *<pre>
+     *<code>
      *  $eventManager->fire('dispatch:beforeDispatchLoop', $dispatcher);
-     *</pre>
+     *</code>
      *
      * @param string $name 具体的某个事件名称，格式为： 事件分组类型:事件名称
      * @param object $source 事件来源
