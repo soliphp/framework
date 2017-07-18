@@ -41,14 +41,15 @@ class Application extends BaseApplication
     public function handle($uri = null)
     {
         $eventManager = $this->getEventManager();
-        $router = $this->router;
-        $dispatcher = $this->dispatcher;
-        $response = $this->response;
 
         // 调用 boot 事件
         if (is_object($eventManager)) {
             $eventManager->fire('application:boot', $this);
         }
+
+        $router = $this->router;
+        $dispatcher = $this->dispatcher;
+        $response = $this->response;
 
         $router->handle($uri);
 

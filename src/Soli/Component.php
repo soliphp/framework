@@ -69,16 +69,16 @@ class Component implements ContainerAwareInterface, EventManagerAwareInterface
     {
         $container = $this->getContainer();
 
+        if ($name == 'container') {
+            $this->container = $container;
+            return $container;
+        }
+
         if ($container->has($name)) {
             $service = $container->getShared($name);
             // 将找到的服务添加到属性, 以便下次直接调用
             $this->$name = $service;
             return $service;
-        }
-
-        if ($name == 'container') {
-            $this->container = $container;
-            return $container;
         }
 
         trigger_error("Access to undefined property $name");
