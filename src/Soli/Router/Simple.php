@@ -59,7 +59,7 @@ class Simple implements RouterInterface
      */
     public function getModuleName()
     {
-        return null;
+        return $this->moduleName;
     }
 
     /**
@@ -67,7 +67,7 @@ class Simple implements RouterInterface
      */
     public function getNamespaceName()
     {
-        return null;
+        return $this->namespaceName;
     }
 
     public function getControllerName()

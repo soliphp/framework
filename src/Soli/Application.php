@@ -54,6 +54,9 @@ class Application extends BaseApplication
         $router->handle($uri);
 
         // 调度器预处理：设置控制器、方法及参数
+        if ($router->getNamespaceName()) {
+            $dispatcher->setNamespaceName($router->getNamespaceName());
+        }
         if ($router->getControllerName()) {
             $dispatcher->setHandlerName($router->getControllerName());
         }
