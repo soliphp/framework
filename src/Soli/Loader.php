@@ -243,8 +243,10 @@ class Loader
         foreach ($this->namespaces as $nsPrefix => $directory) {
             // 类名称以当前命名空间开头
             if (strpos($className, $nsPrefix) === 0) {
+                // fixed nsPrefix
+                $nsPrefix = rtrim($nsPrefix, "\\") . "\\";
                 // 去除前缀
-                $fileName = substr($className, strlen($nsPrefix . "\\"));
+                $fileName = substr($className, strlen($nsPrefix));
                 $fileName = str_replace("\\", DIRECTORY_SEPARATOR, $fileName);
 
                 if ($fileName) {
