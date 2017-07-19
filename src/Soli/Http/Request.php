@@ -15,6 +15,8 @@ class Request implements ContainerAwareInterface
     use ContainerAwareTrait;
 
     protected $filter;
+    protected $rawbody;
+    protected $putCache;
 
     /* 请求参数 */
 
@@ -57,6 +59,17 @@ class Request implements ContainerAwareInterface
         return $this->getHelper($_POST, $name, $filter, $defaultValue);
     }
 
+    public function getPut($name = null, $filter = null, $defaultValue = null)
+    {
+        $put = $this->putCache;
+        if (empty($put)) {
+            parse_str($this->getRawBody(), $put);
+            $this->putCache = $put;
+        }
+
+        return $this->getHelper($put, $name, $filter, $defaultValue);
+    }
+
     /**
      * 是否有某个参数
      *
@@ -75,31 +88,12 @@ class Request implements ContainerAwareInterface
         return isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '';
     }
 
-    public function is()
+    public function getRawBody()
     {
-        foreach (func_get_args() as $method) {
-            $method = strtoupper($method);
-            switch ($method) {
-                case 'AJAX':
-                    if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])
-                        && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest'
-                    ) {
-                        return true;
-                    }
-                    break;
-                case 'SOAP':
-                    if (isset($_SERVER['HTTP_SOAPACTION'])) {
-                        return true;
-                    }
-                    break;
-                default:
-                    if ($this->getMethod() == $method) {
-                        return true;
-                    }
-                    break;
-            }
+        if (empty($this->rawBody)) {
+            $this->rawBody = file_get_contents("php://input");
         }
-        return false;
+        return $this->rawBody;
     }
 
     /* $_SERVER */
