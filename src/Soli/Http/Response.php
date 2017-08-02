@@ -162,22 +162,6 @@ class Response implements ContainerAwareInterface
     }
 
     /**
-     * 设置 json 响应数据
-     *
-     * @example
-     *   $response->setJsonContent(array('data' => '午休时刻'));
-     *
-     * @param array $content
-     * @param int $jsonOptions
-     * @param int $depth
-     */
-    public function setJsonContent($content, $jsonOptions = 0, $depth = 512)
-    {
-        $this->setContentType('application/json', 'UTF-8');
-        $this->setContent(json_encode($content, $jsonOptions, $depth));
-    }
-
-    /**
      * 获取响应的 cookies 信息
      *
      * @return array
