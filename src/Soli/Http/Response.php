@@ -97,11 +97,15 @@ class Response implements ContainerAwareInterface
      *
      * @param int $code 状态码
      * @param string $message 状态描述
+     *
+     * @return $this
      */
     public function setStatusCode($code, $message = null)
     {
         $this->code = $code;
         $this->message = $message;
+
+        return $this;
     }
 
     /**
@@ -115,11 +119,14 @@ class Response implements ContainerAwareInterface
     /**
      * 设置响应类型
      *
-     * @example
+     *<pre>
      *   $response->setContentType('application/javascript');
+     *</pre>
      *
      * @param string $contentType
      * @param string $charset
+     *
+     * @return $this
      */
     public function setContentType($contentType, $charset = null)
     {
@@ -129,16 +136,8 @@ class Response implements ContainerAwareInterface
             $contentType .= "; charset=$charset";
         }
         $this->headers['Content-type'] = $contentType;
-    }
 
-    /**
-     * 追加响应内容
-     *
-     * @param string $content
-     */
-    public function appendContent($content)
-    {
-        $this->content .= $content;
+        return $this;
     }
 
     /**
@@ -155,10 +154,14 @@ class Response implements ContainerAwareInterface
      * 设置响应内容
      *
      * @param string $content
+     *
+     * @return $this
      */
     public function setContent($content = null)
     {
         $this->content = (string)$content;
+
+        return $this;
     }
 
     /**
@@ -175,6 +178,8 @@ class Response implements ContainerAwareInterface
      * 设置响应的 cookie 信息
      *
      * @param array $cookie 单个 cookie 信息
+     *
+     * @return $this
      */
     public function setCookie(array $cookie)
     {
@@ -190,6 +195,8 @@ class Response implements ContainerAwareInterface
 
         $cookie = array_merge($default, $cookie);
         $this->cookies[$cookie['name']] = $cookie;
+
+        return $this;
     }
 
     /**
@@ -207,12 +214,16 @@ class Response implements ContainerAwareInterface
      *
      * @param string $header
      * @param string $value
+     *
+     * @return $this
      */
     public function setHeader($header, $value = null)
     {
         if (is_string($header)) {
             $this->headers[$header] = $value;
         }
+
+        return $this;
     }
 
     /**
@@ -220,6 +231,8 @@ class Response implements ContainerAwareInterface
      *
      * @param string $location 跳转地址
      * @param int $code 状态码，默认 302 临时重定向
+     *
+     * @return $this
      */
     public function redirect($location = null, $code = 302)
     {
@@ -237,17 +250,22 @@ class Response implements ContainerAwareInterface
 
         $this->code = $code;
         $this->setHeader('Location', $location);
+
+        return $this;
     }
 
     /**
      * 发送响应数据
+     *
+     * @return $this
      */
     public function send()
     {
         $this->sendHeaders();
         $this->sendCookies();
-
         $this->sendContent();
+
+        return $this;
     }
 
     /**
@@ -264,6 +282,8 @@ class Response implements ContainerAwareInterface
 
     /**
      * 发送响应 cookie
+     *
+     * @return $this
      */
     public function sendCookies()
     {
@@ -278,15 +298,19 @@ class Response implements ContainerAwareInterface
                 $c['httpOnly']
             );
         }
+
+        return $this;
     }
 
     /**
      * 发送响应头
+     *
+     * @return $this
      */
     public function sendHeaders()
     {
         if (headers_sent()) {
-            return false;
+            return $this;
         }
 
         if (isset($this->headers['Location']) && $this->code === 200) {
@@ -305,6 +329,6 @@ class Response implements ContainerAwareInterface
             }
         }
 
-        return true;
+        return $this;
     }
 }
