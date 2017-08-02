@@ -34,13 +34,6 @@ class Response implements ContainerAwareInterface
     use ContainerAwareTrait;
 
     /**
-     * 是否已发送响应信息
-     *
-     * @var bool
-     */
-    protected $isSend = false;
-
-    /**
      * 状态码
      *
      * @var int
@@ -192,16 +185,6 @@ class Response implements ContainerAwareInterface
     }
 
     /**
-     * 主动设置响应数据已发送
-     *
-     * @param bool $isSend 是否已发送
-     */
-    public function isSend($isSend)
-    {
-        $this->isSend = (bool)$isSend;
-    }
-
-    /**
      * 获取响应的 cookies 信息
      *
      * @return array
@@ -315,10 +298,6 @@ class Response implements ContainerAwareInterface
      */
     public function send()
     {
-        if ($this->isSend) {
-            throw new Exception('Response was already sent');
-        }
-
         // send headers
         $this->sendHeaders();
 
@@ -335,8 +314,6 @@ class Response implements ContainerAwareInterface
                 readfile($this->file);
             }
         }
-
-        $this->isSend = true;
     }
 
     /**
