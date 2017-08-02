@@ -76,13 +76,6 @@ class Response implements ContainerAwareInterface
     protected $cookies = [];
 
     /**
-     * 响应文件
-     *
-     * @var string
-     */
-    protected $file = null;
-
-    /**
      * Response constructor.
      *
      * @param string $content 响应内容
@@ -263,37 +256,6 @@ class Response implements ContainerAwareInterface
     }
 
     /**
-     * 获取文件路径
-     */
-    public function getFile()
-    {
-        return $this->file;
-    }
-
-    /**
-     * 设置响应文件
-     *
-     * @param string $filePath 响应文件的路径
-     * @param string $attachmentName 响应文件名称, 默认使用 $filePath 的文件名称
-     * @param bool $attachment 是否发送下载文件的响应头, 默认发送
-     */
-    public function setFile($filePath, $attachmentName = null, $attachment = true)
-    {
-        if (!is_string($attachmentName)) {
-            $attachmentName = basename($filePath);
-        }
-
-        if ($attachment) {
-            $this->setHeader('Content-Type: application/octet-stream');
-            $this->setHeader('Content-Description: File Transfer');
-            $this->setHeader('Content-Disposition: attachment; filename=' . $attachmentName);
-            $this->setHeader('Content-Transfer-Encoding: binary');
-        }
-
-        $this->file = $filePath;
-    }
-
-    /**
      * 发送响应数据
      */
     public function send()
@@ -305,15 +267,8 @@ class Response implements ContainerAwareInterface
         $this->sendCookies();
 
         // send content
-        if ($this->content !== null) {
-            // 输出响应内容
-            echo $this->content;
-        } else {
-            // 是否响应文件
-            if (is_string($this->file) && strlen($this->file)) {
-                readfile($this->file);
-            }
-        }
+        // 输出响应内容
+        echo $this->content;
     }
 
     /**
