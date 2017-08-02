@@ -244,15 +244,22 @@ class Response implements ContainerAwareInterface
      */
     public function send()
     {
-        // send headers
         $this->sendHeaders();
-
-        // send cookies
         $this->sendCookies();
 
-        // send content
-        // 输出响应内容
+        $this->sendContent();
+    }
+
+    /**
+     * 发送响应内容
+     *
+     * @return $this
+     */
+    public function sendContent()
+    {
         echo $this->content;
+
+        return $this;
     }
 
     /**
