@@ -4,7 +4,9 @@ namespace Soli\Tests;
 
 use Soli\Tests\TestCase;
 use Soli\Di\Container;
-use Soli\Component;
+use Soli\Di\ContainerInterface;
+
+use Soli\Tests\Data\AComponent;
 
 class ComponentTest extends TestCase
 {
@@ -12,30 +14,35 @@ class ComponentTest extends TestCase
 
     public function setUp()
     {
-        $container = new Container;
-        $container->remove('some_service');
+        $container = new Container();
+        $container->remove('someService');
 
-        $ao = new \ArrayObject;
+        $ao = new \ArrayObject();
         $ao->name = 'Injectable';
-        $container['some_service'] = $ao;
+        $container['someService'] = $ao;
 
         $this->container = $container;
     }
 
     public function testInjectionAware()
     {
-        $myComponent = $this->container->getShared('Soli\Tests\MyComponent');
+        $aComponent = $this->container->getShared(AComponent::class);
 
         // 获取容器
-        $container = $myComponent->container;
+        $container = $aComponent->container;
         // 获取容器中的服务
-        $s = $myComponent->some_service;
+        $s = $aComponent->someService;
 
-        $this->assertInstanceOf(Container::class, $container);
+        $this->assertInstanceOf(ContainerInterface::class, $container);
         $this->assertEquals('Injectable', $s->name);
     }
-}
 
-class MyComponent extends Component
-{
+    /**
+     * @expectedException \PHPUnit_Framework_Error
+     */
+    public function testUndefinedPropertyException()
+    {
+        $aComponent = $this->container->getShared(AComponent::class);
+        $aComponent->undefinedProperty;
+    }
 }

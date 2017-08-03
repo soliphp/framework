@@ -6,6 +6,9 @@ use Soli\Tests\TestCase;
 use Soli\Events\EventManager;
 use Soli\Events\Event;
 
+use Soli\Tests\Data\Events\EComponent;
+use Soli\Tests\Data\Events\EComponentEvents;
+
 class EventManagerTest extends TestCase
 {
     public function testFireByClosure()
@@ -14,15 +17,15 @@ class EventManagerTest extends TestCase
         // 监听事件
         $eventManager->on(
             'my-component:before',
-            function (Event $event, $myComponent) {
+            function (Event $event, $eComponent) {
                 return 'before';
             }
         );
 
-        $myComponent = new MyComponent;
-        $myComponent->setEventManager($eventManager);
+        $eComponent = new EComponent;
+        $eComponent->setEventManager($eventManager);
 
-        $result = $myComponent->someTask();
+        $result = $eComponent->someTask();
 
         $this->assertStringStartsWith('before, do something', $result);
     }
@@ -33,48 +36,14 @@ class EventManagerTest extends TestCase
 
         $eventManager->on(
             'my-component',
-            new MyComponentEvents
+            new EComponentEvents()
         );
 
-        $myComponent = new MyComponent;
-        $myComponent->setEventManager($eventManager);
+        $eComponent = new EComponent();
+        $eComponent->setEventManager($eventManager);
 
-        $result = $myComponent->someTask();
+        $result = $eComponent->someTask();
 
         $this->assertStringEndsWith('do something, after', $result);
-    }
-}
-
-class MyComponent
-{
-    protected $eventManager;
-
-    public function setEventManager($eventManager)
-    {
-        $this->eventManager = $eventManager;
-    }
-
-    public function getEventManager()
-    {
-        return $this->eventManager;
-    }
-
-    public function someTask()
-    {
-        $before = $this->eventManager->fire('my-component:before', $this);
-
-        // do something ...
-
-        $after = $this->eventManager->fire('my-component:after', $this);
-
-        return "$before, do something, $after";
-    }
-}
-
-class MyComponentEvents
-{
-    public function after(Event $event, $myComponent)
-    {
-        return 'after';
     }
 }

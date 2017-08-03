@@ -5,17 +5,19 @@ namespace Soli\Tests\Events;
 use Soli\Tests\TestCase;
 use Soli\Events\Event;
 
+use Soli\Tests\Data\Events\Observer;
+
 class EventTest extends TestCase
 {
     public function testFire()
     {
         $queue = [
             // Closure
-            function (Event $event, $myComponent) {
+            function (Event $event, $eComponent) {
                 return 'notify 1';
             },
             // Object Instance
-            new Observer,
+            new Observer(),
         ];
 
         $event = new Event('notify', $this);
@@ -23,13 +25,5 @@ class EventTest extends TestCase
         $status = $event->fire($queue);
 
         $this->assertEquals('notify 2', $status);
-    }
-}
-
-class Observer
-{
-    public function notify()
-    {
-        return 'notify 2';
     }
 }
