@@ -120,7 +120,7 @@ class Response implements ContainerAwareInterface
      * 设置响应类型
      *
      *<pre>
-     *   $response->setContentType('application/javascript');
+     * $response->setContentType('application/javascript');
      *</pre>
      *
      * @param string $contentType
@@ -264,6 +264,10 @@ class Response implements ContainerAwareInterface
         $this->sendHeaders();
         $this->sendCookies();
         $this->sendContent();
+
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        }
 
         return $this;
     }
