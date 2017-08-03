@@ -7,7 +7,6 @@ namespace Soli\Http;
 use Soli\Di\ContainerAwareInterface;
 use Soli\Di\ContainerAwareTrait;
 use Soli\ViewInterface;
-use Soli\Exception;
 
 /**
  * 响应

@@ -13,6 +13,7 @@ use Soli\Di\ContainerAwareTrait;
  * 模型
  *
  * @property \Soli\Db $db
+ * @property \Soli\Di\ContainerInterface $container
  */
 abstract class Model implements ContainerAwareInterface
 {

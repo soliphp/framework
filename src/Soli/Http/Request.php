@@ -15,7 +15,7 @@ class Request implements ContainerAwareInterface
     use ContainerAwareTrait;
 
     protected $filter;
-    protected $rawbody;
+    protected $rawBody;
     protected $putCache;
 
     /* 请求参数 */
