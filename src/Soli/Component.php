@@ -82,6 +82,5 @@ class Component implements ContainerAwareInterface, EventManagerAwareInterface
         }
 
         trigger_error("Access to undefined property $name");
-        return null;
     }
 }
