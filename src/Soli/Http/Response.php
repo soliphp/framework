@@ -54,11 +54,11 @@ class Response implements ContainerAwareInterface
     protected $content = null;
 
     /**
-     * 响应的数据类型, 默认为 html
+     * 响应的数据类型
      *
      * @var string
      */
-    protected $contentType = 'text/html';
+    protected $contentType = null;
 
     /**
      * 响应头信息
