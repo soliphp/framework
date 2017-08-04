@@ -49,7 +49,6 @@ class Application extends BaseApplication
 
         $router = $this->router;
         $dispatcher = $this->dispatcher;
-        $response = $this->response;
 
         $router->handle($uri);
 
@@ -79,6 +78,7 @@ class Application extends BaseApplication
         if ($returnedResponse instanceof Response) {
             $response = $returnedResponse;
         } else {
+            $response = $this->response;
             if (is_string($returnedResponse)) {
                 // 作为响应内容
                 $response->setContent($returnedResponse);
