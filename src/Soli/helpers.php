@@ -117,3 +117,22 @@ if (!function_exists('ends_with')) {
         return (string)$needle === substr($haystack, -strlen($needle));
     }
 }
+
+if (!function_exists('contains')) {
+    /**
+     * Determine if a given string contains a given substring.
+     *
+     * <code>
+     * echo contains('Hello', 'ell'); // true
+     * echo contains('Hello', 'hll'); // false
+     * </code>
+     *
+     * @param string $haystack
+     * @param string $needle
+     * @return bool
+     */
+    function contains($haystack, $needle)
+    {
+        return mb_strpos($haystack, $needle) !== false;
+    }
+}

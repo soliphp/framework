@@ -38,4 +38,10 @@ class HelperTest extends TestCase
         $this->assertTrue(ends_with('Hello', 'llo'));
         $this->assertFalse(ends_with('Hello', 'LLO'));
     }
+
+    public function testContains()
+    {
+        $this->assertTrue(contains('Hello', 'ell'));
+        $this->assertFalse(contains('Hello', 'hll'));
+    }
 }
