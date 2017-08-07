@@ -77,8 +77,9 @@ abstract class Model implements ContainerAwareInterface
     public function tableName()
     {
         if ($this->tableName === null) {
-            $path = explode("\\", get_called_class());
-            $this->tableName = strtolower(preg_replace('/(.)(?=[A-Z])/', '$1_', array_pop($path)));
+            $this->tableName = strtolower(
+                preg_replace('/(.)(?=[A-Z])/', '$1_', basename(str_replace("\\", '/', get_called_class())))
+            );
         }
         return $this->tableName;
     }
