@@ -24,13 +24,6 @@ interface RouterInterface
     //public function map($httpMethods, $pattern, $handler);
 
     /**
-     * Returns processed module name
-     *
-     * @return string
-     */
-    public function getModuleName();
-
-    /**
      * Returns processed namespace name
      *
      * @return string

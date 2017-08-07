@@ -10,15 +10,13 @@ class Simple implements RouterInterface
 {
     protected $namespaceName = null;
 
-    protected $moduleName = null;
-
     protected $controllerName = null;
 
     protected $actionName = null;
 
     protected $params = [];
 
-   /**
+    /**
      * @param string $uri
      */
     public function handle($uri = null)
@@ -52,14 +50,6 @@ class Simple implements RouterInterface
         list($uri) = explode('?', $uri);
 
         return $uri ?: '/';
-    }
-
-    /**
-     * Not implemented
-     */
-    public function getModuleName()
-    {
-        return $this->moduleName;
     }
 
     /**
