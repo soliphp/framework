@@ -22,9 +22,9 @@ class RedirectResponse extends Response
      * @param int $code
      * @param string $message
      */
-    public function __construct($url, $code = 302)
+    public function __construct($url, $code = 302, $message = null)
     {
-        parent::__construct('', $code);
+        parent::__construct('', $code, $message);
 
         $this->setTargetUrl($url);
     }
