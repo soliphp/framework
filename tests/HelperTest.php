@@ -44,4 +44,10 @@ class HelperTest extends TestCase
         $this->assertTrue(contains('Hello', 'ell'));
         $this->assertFalse(contains('Hello', 'hll'));
     }
+
+    public function testIsJson()
+    {
+        $this->assertTrue(is_json('{"data":123}'));
+        $this->assertFalse(is_json('{data:123}'));
+    }
 }

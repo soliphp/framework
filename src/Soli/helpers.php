@@ -136,3 +136,25 @@ if (!function_exists('contains')) {
         return mb_strpos($haystack, $needle) !== false;
     }
 }
+
+if (!function_exists('is_json')) {
+    /**
+     * Check if a string is JSON
+     *
+     * <code>
+     * echo is_json('{"data":123}'); // true
+     * echo is_json('{data:123}'); // false
+     * </code>
+     *
+     * @param string $str
+     * @return bool
+     */
+    function is_json($str)
+    {
+        if (is_string($str)) {
+            json_decode($str);
+            return (json_last_error() == JSON_ERROR_NONE);
+        }
+        return false;
+    }
+}
