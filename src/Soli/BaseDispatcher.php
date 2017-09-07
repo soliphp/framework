@@ -84,10 +84,6 @@ abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAw
 
             $this->finished = true;
 
-            $handlerName = $this->namespaceName . ucfirst($this->handlerName) . $this->handlerSuffix;
-            $actionName = $this->actionName . $this->actionSuffix;
-            $params = $this->params;
-
             if (is_object($eventManager)) {
                 if ($eventManager->fire('dispatch:beforeDispatch', $this) === false) {
                     continue;
@@ -97,6 +93,10 @@ abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAw
                     continue;
                 }
             }
+
+            $handlerName = $this->namespaceName . ucfirst($this->handlerName) . $this->handlerSuffix;
+            $actionName = $this->actionName . $this->actionSuffix;
+            $params = $this->params;
 
             // Handler 是否存在
             if (!class_exists($handlerName)) {
