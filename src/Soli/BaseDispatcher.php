@@ -65,7 +65,7 @@ abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAw
         $eventManager = $this->getEventManager();
 
         if (is_object($eventManager)) {
-            if ($eventManager->fire('dispatch:beforeDispatchLoop', $this) === false) {
+            if ($eventManager->trigger('dispatch.beforeDispatchLoop', $this) === false) {
                 return false;
             }
         }
@@ -85,7 +85,7 @@ abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAw
             $this->finished = true;
 
             if (is_object($eventManager)) {
-                if ($eventManager->fire('dispatch:beforeDispatch', $this) === false) {
+                if ($eventManager->trigger('dispatch.beforeDispatch', $this) === false) {
                     continue;
                 }
                 // Check if the user made a forward in the listener
@@ -129,7 +129,7 @@ abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAw
             // Action 是否可调用
             if (!is_callable([$handlerName, $actionName])) {
                 if (is_object($eventManager)) {
-                    if ($eventManager->fire('dispatch:beforeNotFoundAction', $this) === false) {
+                    if ($eventManager->trigger('dispatch.beforeNotFoundAction', $this) === false) {
                         continue;
                     }
 
@@ -172,12 +172,12 @@ abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAw
             }
 
             if (is_object($eventManager)) {
-                $eventManager->fire('dispatch:afterDispatch', $this, $returnedResponse);
+                $eventManager->trigger('dispatch.afterDispatch', $this, $returnedResponse);
             }
         }
 
         if (is_object($eventManager)) {
-            $eventManager->fire('dispatch:afterDispatchLoop', $this, $returnedResponse);
+            $eventManager->trigger('dispatch.afterDispatchLoop', $this, $returnedResponse);
         }
 
         return $returnedResponse;
@@ -303,7 +303,7 @@ abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAw
     {
         $eventManager = $this->getEventManager();
         if (is_object($eventManager)) {
-            if ($eventManager->fire('dispatch:beforeException', $this, $e) === false) {
+            if ($eventManager->trigger('dispatch.beforeException', $this, $e) === false) {
                 return false;
             }
         }

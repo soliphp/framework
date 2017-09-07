@@ -77,8 +77,8 @@ class DispatcherTest extends TestCase
     {
         $eventManager = new EventManager;
         // Dispatch Events
-        $eventManager->on(
-            'dispatch:beforeException',
+        $eventManager->attach(
+            'dispatch.beforeException',
             function (Event $event, Dispatcher $dispatcher, $exception) {
                 if ($exception instanceof Exception) {
                     switch ($exception->getCode()) {

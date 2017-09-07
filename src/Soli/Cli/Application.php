@@ -32,7 +32,7 @@ class Application extends BaseApplication
 
         // 调用 boot 事件
         if (is_object($eventManager)) {
-            $eventManager->fire('application:boot', $this);
+            $eventManager->trigger('application.boot', $this);
         }
 
         $this->router($args);

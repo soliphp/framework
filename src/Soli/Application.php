@@ -44,7 +44,7 @@ class Application extends BaseApplication
 
         // 调用 boot 事件
         if (is_object($eventManager)) {
-            $eventManager->fire('application:boot', $this);
+            $eventManager->trigger('application.boot', $this);
         }
 
         $router = $this->router;
@@ -89,7 +89,7 @@ class Application extends BaseApplication
         }
 
         if (is_object($eventManager)) {
-            $eventManager->fire('application:finish', $this, $response);
+            $eventManager->trigger('application.finish', $this, $response);
         }
 
         $response->sendHeaders();

@@ -4,15 +4,20 @@
  */
 namespace Soli\Events;
 
-use Closure;
-
 /**
  * 事件原型
+ *
+ * @codeCoverageIgnore
  */
-class Event
+class Event implements EventInterface
 {
     /**
-     * 事件名称，当事件监听器为对象时，事件名称对应事件监听器中的方法名
+     * 事件名称分隔符
+     */
+    const DELIMITER = '.';
+
+    /**
+     * 完整的事件名称，格式为 "事件空间.事件名称"
      *
      * @var string
      */
@@ -21,9 +26,9 @@ class Event
     /**
      * 事件来源
      *
-     * @var object
+     * @var object|string
      */
-    protected $source;
+    protected $target;
 
     /**
      * 事件相关数据
@@ -33,82 +38,66 @@ class Event
     protected $data;
 
     /**
-     * Whether no further event listeners should be triggered
+     * 是否停止触发未调用的监听器
      *
      * @var bool
      */
-    protected $propagationStopped = false;
+    protected $stopped = false;
 
     /**
      * Event constructor.
      *
      * @param string $name
-     * @param object $source
+     * @param string|object $target
      * @param mixed $data
-     * @throws \Exception
      */
-    public function __construct($name, $source, $data = null)
+    public function __construct($name, $target = null, $data = null)
     {
-        if (!is_string($name) || !is_object($source)) {
-            throw new \Exception('Invalid parameter type.');
-        }
+        $this->setName($name);
+        $this->target = $target;
+        $this->data = $data;
+    }
 
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getTarget()
+    {
+        return $this->target;
+    }
+
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    public function setName($name)
+    {
+        if (!is_string($name) || !strpos($name, Event::DELIMITER)) {
+            throw new \InvalidArgumentException('Invalid event type ' . $name);
+        }
         $this->name = $name;
-        $this->source = $source;
-
-        if ($data !== null) {
-            $this->data = $data;
-        }
     }
 
-    /**
-     * 激活事件监听队列
-     *
-     * @param array $queue
-     * @return mixed
-     * @throws \Exception
-     */
-    public function fire($queue)
+    public function setTarget($target)
     {
-        if (!is_array($queue)) {
-            throw new \Exception('The queue is not valid');
-        }
-
-        // 事件监听队列中最后一个监听器的执行状态
-        $status = null;
-
-        foreach ($queue as $listener) {
-            if ($this->isPropagationStopped()) {
-                break;
-            }
-
-            if ($listener instanceof Closure) {
-                // 调用闭包监听器
-                $status = call_user_func_array($listener, [$this, $this->source, $this->data]);
-            } elseif (method_exists($listener, $this->name)) {
-                // 调用对象监听器
-                $status = $listener->{$this->name}($this, $this->source, $this->data);
-            }
-        }
-
-        return $status;
+        $this->target = $target;
     }
 
-    /**
-     * Stops the propagation of the event to further event listeners.
-     */
+    public function setData($data)
+    {
+        $this->data = $data;
+    }
+
     public function stopPropagation()
     {
-        $this->propagationStopped = true;
+        $this->stopped = true;
     }
 
-    /**
-     * Has this event indicated event propagation should stop?
-     *
-     * @return bool
-     */
     public function isPropagationStopped()
     {
-        return $this->propagationStopped;
+        return $this->stopped;
     }
 }
