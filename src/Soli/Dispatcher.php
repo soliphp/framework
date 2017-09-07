@@ -6,6 +6,8 @@ namespace Soli;
 
 /**
  * 应用调度器
+ *
+ * @codeCoverageIgnore
  */
 class Dispatcher extends BaseDispatcher
 {

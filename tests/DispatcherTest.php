@@ -15,6 +15,8 @@ class DispatcherTest extends TestCase
     public function setUp()
     {
         $container = new Container;
+        $container->remove('dispatcher');
+
         // 把 dispatcher 扔进容器，供 TestController 使用
         $container->set('dispatcher', function () use ($container) {
             $dispatcher = new Dispatcher();
@@ -36,7 +38,7 @@ class DispatcherTest extends TestCase
 
         $returnedResponse = $this->dispatcher->dispatch();
 
-        $this->assertEquals('hello, Soli', $returnedResponse);
+        $this->assertEquals('Hello, Soli.', $returnedResponse);
     }
 
     public function testForward()

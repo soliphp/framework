@@ -14,7 +14,7 @@ class TestController extends Controller
 
     public function helloAction()
     {
-        return 'hello, Soli';
+        return 'Hello, Soli.';
     }
 
     public function forwardAction()

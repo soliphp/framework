@@ -29,7 +29,7 @@ MVC、[依赖注入]、[事件管理]、[闪存消息]、[模版引擎]（[Twig]
 [闪存消息]: http://soli-api.aboutc.net/Soli/Session/Flash.html
 [模版引擎]: http://soli-api.aboutc.net/Soli/View/Engine.html
 [日志]: http://soli-api.aboutc.net/Soli/Logger.html
-[命令行应用]: http://soli-api.aboutc.net/Soli/Cli.html
+[命令行应用]: http://soli-api.aboutc.net/Soli/Console.html
 [https://github.com/ueaner/soliphp]: https://github.com/ueaner/soliphp
 [API 参考]: http://soli-api.aboutc.net/
 [MIT License]: LICENSE

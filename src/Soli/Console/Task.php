@@ -2,14 +2,14 @@
 /**
  * @author ueaner <ueaner@gmail.com>
  */
-namespace Soli\Cli;
+namespace Soli\Console;
 
 use Soli\Component;
 
 /**
  * 命令行任务基类
  *
- * @property \Soli\Cli\Dispatcher $dispatcher
+ * @property \Soli\Console\Dispatcher $dispatcher
  */
 class Task extends Component
 {

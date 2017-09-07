@@ -2,12 +2,14 @@
 /**
  * @author ueaner <ueaner@gmail.com>
  */
-namespace Soli\Cli;
+namespace Soli\Console;
 
 use Soli\BaseDispatcher;
 
 /**
  * 命令行应用调度器
+ *
+ * @codeCoverageIgnore
  */
 class Dispatcher extends BaseDispatcher
 {

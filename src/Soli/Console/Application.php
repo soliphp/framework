@@ -2,14 +2,14 @@
 /**
  * @author ueaner <ueaner@gmail.com>
  */
-namespace Soli\Cli;
+namespace Soli\Console;
 
 use Soli\BaseApplication;
 
 /**
  * 命令行应用
  *
- * @property \Soli\Cli\Dispatcher $dispatcher
+ * @property \Soli\Console\Dispatcher $dispatcher
  */
 class Application extends BaseApplication
 {
@@ -17,7 +17,7 @@ class Application extends BaseApplication
      * 默认注册服务
      */
     protected $defaultServices = [
-        'dispatcher' => \Soli\Cli\Dispatcher::class,
+        'dispatcher' => \Soli\Console\Dispatcher::class,
     ];
 
     /**
@@ -32,7 +32,7 @@ class Application extends BaseApplication
 
         // 调用 boot 事件
         if (is_object($eventManager)) {
-            $eventManager->trigger('application.boot', $this);
+            $eventManager->trigger('console.boot', $this);
         }
 
         $this->router($args);

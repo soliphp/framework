@@ -12,6 +12,8 @@ class ApplicationTest extends TestCase
     protected function createApplication()
     {
         $container = new Container();
+        $container->remove('dispatcher');
+
         $container->set('dispatcher', function () {
             $dispatcher = new Dispatcher();
             $dispatcher->setNamespaceName("Soli\\Tests\\Handlers\\");
@@ -28,6 +30,6 @@ class ApplicationTest extends TestCase
         $app = $this->createApplication();
         $response = $app->handle('test/hello');
 
-        $this->assertEquals('hello, Soli', $response->getContent());
+        $this->assertEquals('Hello, Soli.', $response->getContent());
     }
 }
