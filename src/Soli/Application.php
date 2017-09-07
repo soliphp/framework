@@ -88,9 +88,8 @@ class Application extends BaseApplication
             }
         }
 
-        // 调用 beforeSendResponse 事件
         if (is_object($eventManager)) {
-            $eventManager->fire('application:beforeSendResponse', $this, $response);
+            $eventManager->fire('application:finish', $this, $response);
         }
 
         $response->sendHeaders();
