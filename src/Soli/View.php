@@ -177,7 +177,7 @@ class View implements ViewInterface
             }
 
             if ($this->engine === null) {
-                throw new \Exception("Engine must be an instance of \Soli\View\EngineInterface");
+                throw new \UnexpectedValueException("Engine must be an instance of \Soli\View\EngineInterface");
             }
         }
 

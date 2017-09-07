@@ -26,7 +26,7 @@ class Simple extends Engine implements EngineInterface
     {
         $template = $this->view->getViewsDir() . $path;
         if (!is_file($template)) {
-            throw new \Exception("Template file not found: $template.");
+            throw new \InvalidArgumentException("Template file not found: $template.");
         }
 
         // 设置视图变量
