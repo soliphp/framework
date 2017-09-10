@@ -147,7 +147,7 @@ class Db
     public function query($sql, array $binds = [], $fetchMode = 'all', $retries = 3)
     {
         try {
-            return $this->executeInternal($sql, $binds, $fetchMode);
+            return $this->queryInternal($sql, $binds, $fetchMode);
         } catch (\PDOException $e) {
             // 2006: MySQL server has gone away
             // 2013: Lost connection to MySQL server during query
@@ -170,7 +170,7 @@ class Db
      *   插入数据返回插入数据的主键ID，更新/删除数据返回影响行数
      *   查询语句则根据 $fetchMode 返回对应类型的结果集
      */
-    protected function executeInternal($sql, array $binds = [], $fetchMode = 'all')
+    protected function queryInternal($sql, array $binds = [], $fetchMode = 'all')
     {
         // prepare -> binds -> execute
         $this->stmt = $this->connection->prepare($sql);
