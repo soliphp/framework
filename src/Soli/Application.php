@@ -96,9 +96,6 @@ class Application extends BaseApplication
 
         $this->trigger('application.finish', $response);
 
-        $response->sendHeaders();
-        $response->sendCookies();
-
         return $response;
     }
 
