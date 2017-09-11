@@ -6,6 +6,8 @@ use Soli\Tests\TestCase;
 use Soli\Application;
 use Soli\Di\Container;
 use Soli\Dispatcher;
+use Soli\Events\EventManager;
+use Soli\Events\Event;
 
 class ApplicationTest extends TestCase
 {
@@ -31,5 +33,39 @@ class ApplicationTest extends TestCase
         $response = $app->handle('test/hello');
 
         $this->assertEquals('Hello, Soli.', $response->getContent());
+    }
+
+    /**
+     * 处理异常事件
+     */
+    public function testExceptionEvent()
+    {
+        $app = $this->createApplication();
+
+        $this->setEventManager($app);
+
+        $response = $app->handle('test/notfoundxxxxxxx');
+
+        $this->assertStringStartsWith('Handled Exception', $response->getContent());
+    }
+
+    protected function setEventManager($app)
+    {
+        $eventManager = new EventManager();
+
+        $eventManager->attach(
+            'application.exception',
+            function (Event $event, Application $app, $exception) {
+                // exception handling
+                $app->dispatcher->forward([
+                    'controller' => 'test',
+                    'action'     => 'handleException',
+                    'params'     => [$exception->getMessage()]
+                ]);
+                return $app->dispatcher->dispatch();
+            }
+        );
+
+        $app->setEventManager($eventManager);
     }
 }

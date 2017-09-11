@@ -40,6 +40,17 @@ class Application extends BaseApplication
      */
     public function handle($uri = null)
     {
+        try {
+            return $this->handleInternal($uri);
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        } catch (\Throwable $e) {
+            return $this->handleException($e);
+        }
+    }
+
+    protected function handleInternal($uri)
+    {
         $this->trigger('application.boot');
 
         $router = $this->router;
@@ -120,5 +131,17 @@ class Application extends BaseApplication
 
         // 自动渲染视图
         return $view->render($template);
+    }
+
+    protected function handleException(\Exception $e)
+    {
+        $returnedResponse = $this->trigger('application.exception', $e);
+        if ($returnedResponse instanceof Response) {
+            return $returnedResponse;
+        } elseif (is_string($returnedResponse)) {
+            return $this->response->setContent($returnedResponse);
+        }
+
+        throw $e;
     }
 }
