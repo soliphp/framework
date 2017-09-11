@@ -33,14 +33,6 @@ abstract class BaseDispatcher extends Component
      */
     protected $finished = null;
 
-    const EXCEPTION_CYCLIC_ROUTING = 1;
-
-    const EXCEPTION_HANDLER_NOT_FOUND = 2;
-
-    const EXCEPTION_INVALID_PARAMS = 3;
-
-    const EXCEPTION_ACTION_NOT_FOUND = 4;
-
     /**
      * BaseDispatcher constructor.
      */
@@ -67,10 +59,7 @@ abstract class BaseDispatcher extends Component
             ++$numberDispatches;
 
             if ($numberDispatches >= 256) {
-                $this->throwDispatchException(
-                    'Dispatcher has detected a cyclic routing causing stability problems',
-                    static::EXCEPTION_CYCLIC_ROUTING
-                );
+                throw new Exception('Dispatcher has detected a cyclic routing causing stability problems');
                 break;
             }
 
@@ -90,50 +79,19 @@ abstract class BaseDispatcher extends Component
 
             // Handler 是否存在
             if (!class_exists($handlerName)) {
-                $status = $this->throwDispatchException(
-                    'Not Found handler: ' . $handlerName,
-                    static::EXCEPTION_HANDLER_NOT_FOUND
-                );
-
-                // Check if the user made a forward in the listener
-                if ($status === false && $this->finished === false) {
-                    continue;
-                }
-                break;
-            }
-
-            // 参数格式是否正确
-            if (!is_array($params)) {
-                $status = $this->throwDispatchException(
-                    "Action parameters must be an Array",
-                    static::EXCEPTION_INVALID_PARAMS
-                );
-
-                // Check if the user made a forward in the listener
-                if ($status === false && $this->finished === false) {
-                    continue;
-                }
+                throw new Exception('Not found handler: ' . $handlerName);
                 break;
             }
 
             // Action 是否可调用
             if (!is_callable([$handlerName, $actionName])) {
-                if ($this->trigger('dispatch.beforeNotFoundAction') === false) {
-                    continue;
-                }
+                throw new Exception("Not found action: $handlerName->$actionName");
+                break;
+            }
 
-                if ($this->finished === false) {
-                    continue;
-                }
-
-                $status = $this->throwDispatchException(
-                    sprintf('Not Found Action: %s->%s', $handlerName, $actionName),
-                    static::EXCEPTION_ACTION_NOT_FOUND
-                );
-                // Check if the user made a forward in the listener
-                if ($status === false && $this->finished === false) {
-                    continue;
-                }
+            // 参数格式是否正确
+            if (!is_array($params)) {
+                throw new Exception('Action parameters must be an array');
                 break;
             }
 
@@ -144,20 +102,8 @@ abstract class BaseDispatcher extends Component
                 $handler->initialize();
             }
 
-            try {
-                // 调用 Action
-                $returnedResponse = call_user_func_array([$handler, $actionName], $params);
-            } catch (\Exception $e) {
-                if ($this->handleException($e) === false) {
-                    // forward to exception handler
-                    if ($this->finished === false) {
-                        continue;
-                    }
-                } else {
-                    // rethrow it
-                    throw $e;
-                }
-            }
+            // 调用 Action
+            $returnedResponse = call_user_func_array([$handler, $actionName], $params);
 
             $this->trigger('dispatch.afterDispatch', $returnedResponse);
         }
@@ -253,42 +199,5 @@ abstract class BaseDispatcher extends Component
     public function getParams()
     {
         return $this->params;
-    }
-
-    /**
-     * 抛出内部异常
-     *
-     * @param string $message 异常消息内容
-     * @param int $code 异常代码
-     * @return bool
-     * @throws \Soli\Exception
-     */
-    protected function throwDispatchException($message, $code = 0)
-    {
-        // 实例化异常
-        $e = new Exception($message, $code);
-
-        // 处理异常
-        if ($this->handleException($e) === false) {
-            return false;
-        }
-
-        // 如果没有处理，则抛出异常
-        throw $e;
-    }
-
-    /**
-     * 处理用户异常
-     *
-     * @param \Exception $e
-     * @return bool
-     */
-    protected function handleException($e)
-    {
-        if ($this->trigger('dispatch.beforeException', $e) === false) {
-            return false;
-        }
-
-        return true;
     }
 }

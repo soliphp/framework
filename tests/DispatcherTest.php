@@ -5,8 +5,6 @@ namespace Soli\Tests;
 use Soli\Tests\TestCase;
 use Soli\Di\Container;
 use Soli\Dispatcher;
-use Soli\Events\EventManager;
-use Soli\Events\Event;
 
 class DispatcherTest extends TestCase
 {
@@ -54,59 +52,6 @@ class DispatcherTest extends TestCase
         $returnedResponse = $this->dispatcher->dispatch();
 
         $this->assertEquals('test/index page', $returnedResponse);
-    }
-
-    /**
-     * 处理异常事件
-     */
-    public function testExceptionEvent()
-    {
-        $this->setEventManager();
-
-        $args = [
-            'test',
-            'notfoundxxxxxxx',
-        ];
-
-        $this->prepare($args);
-
-        $returnedResponse = $this->dispatcher->dispatch();
-
-        $this->assertStringStartsWith('Handled Exception', $returnedResponse);
-    }
-
-    protected function setEventManager()
-    {
-        $eventManager = new EventManager;
-        // Dispatch Events
-        $eventManager->attach(
-            'dispatch.beforeException',
-            function (Event $event, Dispatcher $dispatcher, $exception) {
-                if ($exception instanceof Exception) {
-                    switch ($exception->getCode()) {
-                        case Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
-                        case Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
-                            // exception handling
-                            $dispatcher->forward([
-                                'controller' => 'test',
-                                'action'     => 'handleException',
-                                'params'     => [$exception->getMessage()]
-                            ]);
-                            return false;
-                    }
-                }
-
-                // exception handling
-                $dispatcher->forward([
-                    'controller' => 'test',
-                    'action'     => 'handleException',
-                    'params'     => [$exception->getMessage()]
-                ]);
-                return false;
-            }
-        );
-
-        $this->dispatcher->setEventManager($eventManager);
     }
 
     protected function prepare(array $args)
