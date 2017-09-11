@@ -40,12 +40,7 @@ class Application extends BaseApplication
      */
     public function handle($uri = null)
     {
-        $eventManager = $this->getEventManager();
-
-        // 调用 boot 事件
-        if (is_object($eventManager)) {
-            $eventManager->trigger('application.boot', $this);
-        }
+        $this->trigger('application.boot');
 
         $router = $this->router;
         $dispatcher = $this->dispatcher;
@@ -88,9 +83,7 @@ class Application extends BaseApplication
             }
         }
 
-        if (is_object($eventManager)) {
-            $eventManager->trigger('application.finish', $this, $response);
-        }
+        $this->trigger('application.finish', $response);
 
         $response->sendHeaders();
         $response->sendCookies();

@@ -60,6 +60,28 @@ class Component implements ContainerAwareInterface, EventManagerAwareInterface
     }
 
     /**
+     * 触发事件
+     *
+     *<code>
+     * $this->trigger('dispatch.beforeDispatchLoop', $data);
+     *
+     * $event = new Event('application.boot', $data);
+     * $this->trigger($event);
+     *</code>
+     *
+     * @param string|EventInterface $event 事件名称或事件对象实例
+     * @param mixed $data 事件相关数据
+     * @return mixed
+     *
+     */
+    public function trigger($event, $data = null)
+    {
+        if (is_object($this->eventManager)) {
+            return $this->eventManager->trigger($event, $this, $data);
+        }
+    }
+
+    /**
      * 获取容器本身，或者获取容器中的某个服务
      *
      * @param string $name

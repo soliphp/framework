@@ -12,12 +12,8 @@ use Soli\Events\EventManagerAwareTrait;
 /**
  * 调度器基类
  */
-abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAwareInterface
+abstract class BaseDispatcher extends Component
 {
-    use ContainerAwareTrait;
-
-    use EventManagerAwareTrait;
-
     protected $namespaceName = null;
     protected $handlerName = null;
     protected $actionName = null;
@@ -62,12 +58,8 @@ abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAw
         $returnedResponse = null;
         $this->finished = false;
 
-        $eventManager = $this->getEventManager();
-
-        if (is_object($eventManager)) {
-            if ($eventManager->trigger('dispatch.beforeDispatchLoop', $this) === false) {
-                return false;
-            }
+        if ($this->trigger('dispatch.beforeDispatchLoop') === false) {
+            return false;
         }
 
         // dispatch loop
@@ -84,14 +76,12 @@ abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAw
 
             $this->finished = true;
 
-            if (is_object($eventManager)) {
-                if ($eventManager->trigger('dispatch.beforeDispatch', $this) === false) {
-                    continue;
-                }
-                // Check if the user made a forward in the listener
-                if ($this->finished === false) {
-                    continue;
-                }
+            if ($this->trigger('dispatch.beforeDispatch') === false) {
+                continue;
+            }
+            // Check if the user made a forward in the listener
+            if ($this->finished === false) {
+                continue;
             }
 
             $handlerName = $this->namespaceName . ucfirst($this->handlerName) . $this->handlerSuffix;
@@ -128,14 +118,12 @@ abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAw
 
             // Action 是否可调用
             if (!is_callable([$handlerName, $actionName])) {
-                if (is_object($eventManager)) {
-                    if ($eventManager->trigger('dispatch.beforeNotFoundAction', $this) === false) {
-                        continue;
-                    }
+                if ($this->trigger('dispatch.beforeNotFoundAction') === false) {
+                    continue;
+                }
 
-                    if ($this->finished === false) {
-                        continue;
-                    }
+                if ($this->finished === false) {
+                    continue;
                 }
 
                 $status = $this->throwDispatchException(
@@ -171,14 +159,10 @@ abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAw
                 }
             }
 
-            if (is_object($eventManager)) {
-                $eventManager->trigger('dispatch.afterDispatch', $this, $returnedResponse);
-            }
+            $this->trigger('dispatch.afterDispatch', $returnedResponse);
         }
 
-        if (is_object($eventManager)) {
-            $eventManager->trigger('dispatch.afterDispatchLoop', $this, $returnedResponse);
-        }
+        $this->trigger('dispatch.afterDispatchLoop', $returnedResponse);
 
         return $returnedResponse;
     }
@@ -301,11 +285,8 @@ abstract class BaseDispatcher implements ContainerAwareInterface, EventManagerAw
      */
     protected function handleException($e)
     {
-        $eventManager = $this->getEventManager();
-        if (is_object($eventManager)) {
-            if ($eventManager->trigger('dispatch.beforeException', $this, $e) === false) {
-                return false;
-            }
+        if ($this->trigger('dispatch.beforeException', $e) === false) {
+            return false;
         }
 
         return true;
