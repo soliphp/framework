@@ -49,6 +49,11 @@ class Application extends BaseApplication
         }
     }
 
+    public function terminate()
+    {
+        $this->trigger('application.terminate');
+    }
+
     protected function handleInternal($uri)
     {
         $this->trigger('application.boot');
