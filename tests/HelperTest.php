@@ -2,6 +2,8 @@
 
 namespace Soli\Tests;
 
+use PHPUnit\Framework\TestCase;
+
 class HelperTest extends TestCase
 {
     public function testCamelize()

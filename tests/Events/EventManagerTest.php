@@ -2,7 +2,8 @@
 
 namespace Soli\Tests\Events;
 
-use Soli\Tests\TestCase;
+use PHPUnit\Framework\TestCase;
+
 use Soli\Events\EventManager;
 use Soli\Events\Event;
 

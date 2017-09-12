@@ -2,11 +2,10 @@
 
 namespace Soli\Tests\Console;
 
-use Soli\Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 
 use Soli\Console\Application;
 use Soli\Console\Dispatcher;
-
 use Soli\Di\Container;
 use Soli\Events\EventManager;
 use Soli\Events\Event;

@@ -8,7 +8,6 @@ class TestController extends Controller
 {
     public function initialize()
     {
-
     }
 
     public function indexAction()

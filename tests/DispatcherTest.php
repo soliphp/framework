@@ -2,6 +2,8 @@
 
 namespace Soli\Tests;
 
+use PHPUnit\Framework\TestCase;
+
 use Soli\Di\Container;
 use Soli\Dispatcher;
 

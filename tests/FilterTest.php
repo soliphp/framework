@@ -2,6 +2,8 @@
 
 namespace Soli\Tests;
 
+use PHPUnit\Framework\TestCase;
+
 use Soli\Filter;
 
 class FilterTest extends TestCase
