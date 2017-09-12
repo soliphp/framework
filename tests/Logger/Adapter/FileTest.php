@@ -1,6 +1,6 @@
 <?php
 
-namespace Soli\Tests;
+namespace Soli\Tests\Logger\Adapter;
 
 use Soli\Tests\TestCase;
 use Soli\Logger\Adapter\File as Logger;

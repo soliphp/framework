@@ -2,11 +2,13 @@
 
 namespace Soli\Tests;
 
+use Soli\Filter;
+
 class FilterTest extends TestCase
 {
     public function testSanitize()
     {
-        $filter = new \Soli\Filter();
+        $filter = new Filter();
 
         $result = $filter->sanitize("!100a019", "int");
         $this->assertEquals("100019", $result);
@@ -61,7 +63,7 @@ class FilterTest extends TestCase
      */
     public function testInvalidArgumentException()
     {
-        $filter = new \Soli\Filter();
+        $filter = new Filter();
         $filter->sanitize("100", "InvalidArgument");
     }
 }

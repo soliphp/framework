@@ -2,12 +2,12 @@
 
 namespace Soli\Tests;
 
-use Soli\Tests\TestCase;
 use Soli\Di\Container;
 use Soli\Dispatcher;
 
 class DispatcherTest extends TestCase
 {
+    /** @var \Soli\Dispatcher */
     protected $dispatcher;
 
     public function setUp()

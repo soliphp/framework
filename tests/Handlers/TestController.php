@@ -3,10 +3,14 @@
 namespace Soli\Tests\Handlers;
 
 use Soli\Controller;
-use Soli\Exception;
 
 class TestController extends Controller
 {
+    public function initialize()
+    {
+
+    }
+
     public function indexAction()
     {
         return 'test/index page';

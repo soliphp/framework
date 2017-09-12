@@ -2,7 +2,6 @@
 
 namespace Soli\Tests;
 
-use Soli\Tests\TestCase;
 use Soli\Application;
 use Soli\Di\Container;
 use Soli\Dispatcher;
@@ -49,15 +48,16 @@ class ApplicationTest extends TestCase
         $this->assertStringStartsWith('Handled Exception', $response->getContent());
     }
 
-    protected function setEventManager($app)
+    protected function setEventManager(Application $app)
     {
         $eventManager = new EventManager();
 
         $eventManager->attach(
             'application.exception',
-            function (Event $event, Application $app, $exception) {
+            function (Event $event, Application $app, \Exception $exception) {
                 // exception handling
                 $app->dispatcher->forward([
+                    'namespace'  => "Soli\\Tests\\Handlers\\",
                     'controller' => 'test',
                     'action'     => 'handleException',
                     'params'     => [$exception->getMessage()]

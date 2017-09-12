@@ -158,6 +158,7 @@ class ContainerTest extends TestCase
 
     public function testMagicGet()
     {
+        /** @var \Soli\Di\Container $container */
         $container = $this->container;
 
         $container['someService1'] = new \stdClass();
@@ -185,7 +186,7 @@ class ContainerTest extends TestCase
      */
     public function testCantGetServiceById()
     {
-        $service = $this->container->getService('notExistsService');
+        $this->container->getService('notExistsService');
     }
 
     public function testGetServices()
@@ -243,12 +244,14 @@ class ContainerTest extends TestCase
         });
 
         $this->container->set('closure', function () {
+            /** @var \Soli\Di\ContainerInterface $this */
             return $this->get('service1');
         });
         $service = $this->container->get('closure');
         $this->assertEquals('service1 returned', $service);
 
         $this->container->set('closure', function () {
+            /** @var \Soli\Di\Container $this */
             return $this->service1;
         });
         $service = $this->container->get('closure');
@@ -260,6 +263,6 @@ class ContainerTest extends TestCase
      */
     public function testCannotResolved()
     {
-        $service = $this->container->get('notExistsService');
+        $this->container->get('notExistsService');
     }
 }

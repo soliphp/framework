@@ -2,7 +2,6 @@
 
 namespace Soli\Tests;
 
-use Soli\Tests\TestCase;
 use Soli\Di\Container;
 use Soli\Di\ContainerInterface;
 
@@ -10,6 +9,7 @@ use Soli\Tests\Data\AComponent;
 
 class ComponentTest extends TestCase
 {
+    /** @var \Soli\Di\ContainerInterface */
     protected $container;
 
     public function setUp()
