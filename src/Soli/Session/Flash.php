@@ -17,8 +17,8 @@ class Flash implements ContainerAwareInterface
     protected $cssClasses = [
         'error'   => 'error',
         'notice'  => 'notice',
-        'success' => 'success',
-        'warning' => 'warning'
+        'warning' => 'warning',
+        'success' => 'success'
     ];
 
     protected $messages;
@@ -65,12 +65,12 @@ class Flash implements ContainerAwareInterface
         $this->message(__FUNCTION__, $message);
     }
 
-    public function success($message)
+    public function warning($message)
     {
         $this->message(__FUNCTION__, $message);
     }
 
-    public function warning($message)
+    public function success($message)
     {
         $this->message(__FUNCTION__, $message);
     }
