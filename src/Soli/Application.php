@@ -107,6 +107,7 @@ class Application extends BaseApplication
     /**
      * 获取视图自动渲染内容
      *
+     * @codeCoverageIgnore
      * @return string
      */
     protected function viewRender()
