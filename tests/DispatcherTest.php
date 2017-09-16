@@ -15,7 +15,7 @@ class DispatcherTest extends TestCase
     public function setUp()
     {
         $container = new Container;
-        $container->remove('dispatcher');
+        $container->clear();
 
         // 把 dispatcher 扔进容器，供 TestController 使用
         $container->set('dispatcher', function () use ($container) {
@@ -30,7 +30,7 @@ class DispatcherTest extends TestCase
     public function testDispatch()
     {
         $args = [
-            'test',
+            'index',
             'hello',
         ];
 
@@ -45,15 +45,15 @@ class DispatcherTest extends TestCase
     {
         // forward to test/index
         $args = [
-            'test',
-            'forward',
+            'index',
+            'forwardToHello',
         ];
 
         $this->prepare($args);
 
         $returnedResponse = $this->dispatcher->dispatch();
 
-        $this->assertEquals('test/index page', $returnedResponse);
+        $this->assertEquals('Hello, Soli.', $returnedResponse);
     }
 
     protected function prepare(array $args)
