@@ -127,7 +127,7 @@ class EventManagerTest extends TestCase
         $eventManager->clearListeners('my-component.before');
 
         $listeners = $eventManager->getListeners('my-component.before');
-        $this->assertTrue(empty($listeners));
+        $this->assertEmpty($listeners);
     }
 
     public function testGetListeners()
@@ -147,7 +147,7 @@ class EventManagerTest extends TestCase
         $eventManager->detach('my-component.before', $before);
 
         $listeners = $eventManager->getListeners('my-component.before');
-        $this->assertTrue(empty($listeners));
+        $this->assertEmpty($listeners);
     }
 
     public function testStopPropagation()
