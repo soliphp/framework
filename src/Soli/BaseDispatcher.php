@@ -4,11 +4,6 @@
  */
 namespace Soli;
 
-use Soli\Di\ContainerAwareInterface;
-use Soli\Di\ContainerAwareTrait;
-use Soli\Events\EventManagerAwareInterface;
-use Soli\Events\EventManagerAwareTrait;
-
 /**
  * 调度器基类
  */
@@ -183,19 +178,11 @@ abstract class BaseDispatcher extends Component
         return $this->actionName;
     }
 
-    /**
-     * 设置 Action 参数
-     *
-     * @param array $params
-     */
     public function setParams(array $params)
     {
         $this->params = $params;
     }
 
-    /**
-     * 获取 Action 参数
-     */
     public function getParams()
     {
         return $this->params;
