@@ -15,7 +15,7 @@ abstract class BaseDispatcher extends Component
     protected $params = null;
 
     protected $handlerSuffix = null;
-    protected $actionSuffix = 'Action';
+    protected $actionSuffix = null;
 
     protected $previousNamespaceName = null;
     protected $previousHandlerName = null;

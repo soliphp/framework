@@ -16,12 +16,14 @@ class Dispatcher extends BaseDispatcher
      */
     protected $handlerName = 'index';
 
+    protected $handlerSuffix = 'Controller';
+
     /**
      * Default Action
      */
     protected $actionName = 'index';
 
-    protected $handlerSuffix = 'Controller';
+    protected $actionSuffix = 'Action';
 
     public function setControllerSuffix($handlerSuffix)
     {

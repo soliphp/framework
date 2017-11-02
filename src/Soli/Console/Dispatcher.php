@@ -18,12 +18,14 @@ class Dispatcher extends BaseDispatcher
      */
     protected $handlerName = 'main';
 
+    protected $handlerSuffix = 'Task';
+
     /**
      * Default Action
      */
     protected $actionName = 'main';
 
-    protected $handlerSuffix = 'Task';
+    protected $actionSuffix = 'Action';
 
     public function setTaskSuffix($handlerSuffix)
     {
