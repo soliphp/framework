@@ -69,16 +69,14 @@ class Component implements ContainerAwareInterface, EventManagerAwareInterface
      * $this->trigger($event);
      *</code>
      *
-     * @param string|EventInterface $event 事件名称或事件对象实例
+     * @param string|\Soli\Events\EventInterface $event 事件名称或事件对象实例
      * @param mixed $data 事件相关数据
      * @return mixed
      *
      */
     public function trigger($event, $data = null)
     {
-        if (is_object($this->eventManager)) {
-            return $this->eventManager->trigger($event, $this, $data);
-        }
+        return is_object($this->eventManager) ? $this->eventManager->trigger($event, $this, $data) : null;
     }
 
     /**
@@ -104,5 +102,6 @@ class Component implements ContainerAwareInterface, EventManagerAwareInterface
         }
 
         trigger_error("Access to undefined property $name");
+        return null;
     }
 }

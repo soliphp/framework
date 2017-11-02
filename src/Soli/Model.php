@@ -193,6 +193,7 @@ abstract class Model implements ContainerAwareInterface
         }
 
         trigger_error("Access to undefined property $name");
+        return null;
     }
 
     /**
