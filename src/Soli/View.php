@@ -31,16 +31,6 @@ class View implements ViewInterface
     protected $disabled = false;
 
     /**
-     * 获取视图目录
-     *
-     * @return string
-     */
-    public function getViewsDir()
-    {
-        return $this->viewsDir;
-    }
-
-    /**
      * 设置视图目录
      *
      * @param string $viewsDir 视图文件目录
@@ -51,11 +41,13 @@ class View implements ViewInterface
     }
 
     /**
-     * 获取视图文件扩展名
+     * 获取视图目录
+     *
+     * @return string
      */
-    public function getViewExtension()
+    public function getViewsDir()
     {
-        return $this->viewExtension;
+        return $this->viewsDir;
     }
 
     /**
@@ -66,6 +58,14 @@ class View implements ViewInterface
     public function setViewExtension($ext)
     {
         $this->viewExtension = $ext;
+    }
+
+    /**
+     * 获取视图文件扩展名
+     */
+    public function getViewExtension()
+    {
+        return $this->viewExtension;
     }
 
     /**
@@ -122,19 +122,19 @@ class View implements ViewInterface
     }
 
     /**
-     * 禁用自动渲染视图
-     */
-    public function disable()
-    {
-        $this->disabled = true;
-    }
-
-    /**
      * 启用自动渲染视图
      */
     public function enable()
     {
         $this->disabled = false;
+    }
+
+    /**
+     * 禁用自动渲染视图
+     */
+    public function disable()
+    {
+        $this->disabled = true;
     }
 
     /**

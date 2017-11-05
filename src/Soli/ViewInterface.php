@@ -10,6 +10,13 @@ namespace Soli;
 interface ViewInterface
 {
     /**
+     * 设置视图目录
+     *
+     * @param string $viewsDir 视图文件目录
+     */
+    public function setViewsDir($viewsDir);
+
+    /**
      * 获取视图目录
      *
      * @return string
@@ -17,11 +24,16 @@ interface ViewInterface
     public function getViewsDir();
 
     /**
-     * 设置视图目录
+     * 设置视图文件扩展名
      *
-     * @param string $viewsDir 视图文件目录
+     * @param string $ext
      */
-    public function setViewsDir($viewsDir);
+    public function setViewExtension($ext);
+
+    /**
+     * 获取视图文件扩展名
+     */
+    public function getViewExtension();
 
     /**
      * 设置一个视图变量
@@ -32,12 +44,34 @@ interface ViewInterface
     public function setVar($name, $value);
 
     /**
-     * Render
+     * 获取一个视图变量
      *
-     * @param string $path
-     * @return string
+     * @param string $name
      */
-    public function render($path);
+    public function getVar($name);
+
+    /**
+     * 设置多个视图变量
+     *
+     * @param array $vars
+     * @param bool $merge 是否合并已有的视图变量
+     */
+    public function setVars(array $vars, $merge = true);
+
+    /**
+     * 获取当前设置的视图变量
+     */
+    public function getVars();
+
+    /**
+     * 启用自动渲染视图
+     */
+    public function enable();
+
+    /**
+     * 禁用自动渲染视图
+     */
+    public function disable();
 
     /**
      * 是否自动渲染视图
@@ -45,4 +79,12 @@ interface ViewInterface
      * @return bool
      */
     public function isDisabled();
+
+    /**
+     * Render
+     *
+     * @param string $path
+     * @return string
+     */
+    public function render($path);
 }
