@@ -37,10 +37,7 @@
     "autoload": {
         "psr-4": {
             "Soli\\": "src/Soli/"
-        },
-        "files": [
-            "src/Soli/helpers.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {
