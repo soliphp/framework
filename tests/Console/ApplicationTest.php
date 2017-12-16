@@ -31,7 +31,7 @@ class ApplicationTest extends TestCase
     public function testSimple()
     {
         $app = $this->createApplication();
-        $_SERVER['argv'] = ['console', 'main', 'main', 'some params'];
+        $_SERVER['argv'] = ['console', 'task', 'some params'];
         $output = $app->handle();
 
         $this->assertEquals('Hello, Soli.', $output);
@@ -48,7 +48,7 @@ class ApplicationTest extends TestCase
 
         $app->setEventManager($eventManager);
 
-        $output = $app->handle(['main', 'main', 'some params']);
+        $output = $app->handle(['task', 'some params']);
 
         $this->assertEquals('Hello, Soli.', $output);
     }

@@ -2,11 +2,11 @@
 
 namespace Soli\Tests\Handlers;
 
-use Soli\Console\Task;
+use Soli\Console\Command;
 
-class MainTask extends Task
+class Task extends Command
 {
-    public function mainAction()
+    public function handle()
     {
         return 'Hello, Soli.';
     }

@@ -10,34 +10,34 @@ class IndexController extends Controller
     {
     }
 
-    public function indexAction()
+    public function index()
     {
         return 'index page';
     }
 
-    public function helloAction($name = 'Soli')
+    public function hello($name = 'Soli')
     {
         return "Hello, $name.";
     }
 
-    public function forwardToHelloAction()
+    public function forwardToHello()
     {
         return $this->dispatcher->forward([
             'action' => 'hello',
         ]);
     }
 
-    public function responseFalseAction()
+    public function responseFalse()
     {
         return false;
     }
 
-    public function responseInstanceAction()
+    public function responseInstance()
     {
         return $this->response->setContent('response instance');
     }
 
-    public function handleExceptionAction($response)
+    public function handleException($response)
     {
         return $response;
     }
