@@ -50,15 +50,12 @@ class Application extends BaseApplication
             $args = array_slice($_SERVER['argv'], 1);
         }
 
-        // 调度器预处理：设置控制器、方法及参数
+        // 调度器预处理：设置控制器、参数
         if (isset($args[0])) {
             $this->dispatcher->setHandlerName($args[0]);
         }
         if (isset($args[1])) {
-            $this->dispatcher->setActionName($args[1]);
-        }
-        if (isset($args[2])) {
-            $this->dispatcher->setParams(array_slice($args, 2));
+            $this->dispatcher->setParams(array_slice($args, 1));
         }
     }
 }

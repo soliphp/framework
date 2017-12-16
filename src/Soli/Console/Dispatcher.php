@@ -14,30 +14,16 @@ use Soli\BaseDispatcher;
 class Dispatcher extends BaseDispatcher
 {
     /**
-     * Default Handler
-     */
-    protected $handlerName = 'main';
-
-    protected $handlerSuffix = 'Task';
-
-    /**
      * Default Action
      */
-    protected $actionName = 'main';
+    protected $actionName = 'handle';
 
-    protected $actionSuffix = 'Action';
-
-    public function setTaskSuffix($handlerSuffix)
-    {
-        $this->handlerSuffix = $handlerSuffix;
-    }
-
-    public function setTaskName($handlerName)
+    public function setCommandName($handlerName)
     {
         $this->handlerName = $handlerName;
     }
 
-    public function getTaskName()
+    public function getCommandName()
     {
         return $this->handlerName;
     }

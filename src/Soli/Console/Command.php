@@ -11,7 +11,7 @@ use Soli\Component;
  *
  * @property \Soli\Console\Dispatcher $dispatcher
  */
-class Task extends Component
+class Command extends Component
 {
     /**
      * Task constructor.
