@@ -23,8 +23,6 @@ class Dispatcher extends BaseDispatcher
      */
     protected $actionName = 'index';
 
-    protected $actionSuffix = 'Action';
-
     public function setControllerSuffix($handlerSuffix)
     {
         $this->handlerSuffix = $handlerSuffix;
