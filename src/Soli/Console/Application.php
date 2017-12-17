@@ -52,7 +52,7 @@ class Application extends BaseApplication
 
         // 调度器预处理：设置控制器、参数
         if (isset($args[0])) {
-            $this->dispatcher->setHandlerName($args[0]);
+            $this->dispatcher->setCommandName($args[0]);
         }
         if (isset($args[1])) {
             $this->dispatcher->setParams(array_slice($args, 1));

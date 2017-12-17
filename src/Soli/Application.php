@@ -5,6 +5,8 @@
 namespace Soli;
 
 use Soli\Http\Response;
+use Exception;
+use Throwable;
 
 /**
  * 应用
@@ -42,9 +44,9 @@ class Application extends BaseApplication
     {
         try {
             return $this->handleInternal($uri);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->handleException($e);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return $this->handleException($e);
         }
     }
@@ -68,7 +70,7 @@ class Application extends BaseApplication
             $dispatcher->setNamespaceName($router->getNamespaceName());
         }
         if ($router->getControllerName()) {
-            $dispatcher->setHandlerName($router->getControllerName());
+            $dispatcher->setControllerName($router->getControllerName());
         }
         if ($router->getActionName()) {
             $dispatcher->setActionName($router->getActionName());
@@ -136,7 +138,7 @@ class Application extends BaseApplication
         return $view->render($template);
     }
 
-    protected function handleException(\Exception $e)
+    protected function handleException(Exception $e)
     {
         $returnedResponse = $this->trigger('application.exception', $e);
         if ($returnedResponse instanceof Response) {

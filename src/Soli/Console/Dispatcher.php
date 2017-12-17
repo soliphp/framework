@@ -4,7 +4,7 @@
  */
 namespace Soli\Console;
 
-use Soli\BaseDispatcher;
+use Soli\Dispatcher as BaseDispatcher;
 
 /**
  * 命令行应用调度器
@@ -13,6 +13,13 @@ use Soli\BaseDispatcher;
  */
 class Dispatcher extends BaseDispatcher
 {
+    /**
+     * Default Handler
+     */
+    protected $handlerName = null;
+
+    protected $handlerSuffix = null;
+
     /**
      * Default Action
      */
