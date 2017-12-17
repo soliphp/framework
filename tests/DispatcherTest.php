@@ -60,7 +60,7 @@ class DispatcherTest extends TestCase
     {
         // 设置控制器、方法及参数
         if (isset($args[0])) {
-            $this->dispatcher->setHandlerName($args[0]);
+            $this->dispatcher->setControllerName($args[0]);
         }
         if (isset($args[1])) {
             $this->dispatcher->setActionName($args[1]);

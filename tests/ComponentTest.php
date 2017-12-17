@@ -40,7 +40,7 @@ class ComponentTest extends TestCase
     }
 
     /**
-     * @expectedException \PHPUnit_Framework_Error
+     * @expectedException \PHPUnit\Framework\Exception
      */
     public function testUndefinedPropertyException()
     {
