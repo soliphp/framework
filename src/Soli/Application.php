@@ -4,6 +4,7 @@
  */
 namespace Soli;
 
+use Soli\Di\ContainerInterface;
 use Soli\Http\Response;
 use Exception;
 use Throwable;
@@ -19,8 +20,10 @@ use Throwable;
  * @property \Soli\Session\Flash $flash
  * @property \Soli\ViewInterface $view
  */
-class Application extends BaseApplication
+class Application extends Component
 {
+    const VERSION = '1.2.0';
+
     /**
      * 默认注册服务
      */
@@ -33,6 +36,25 @@ class Application extends BaseApplication
         'flash'      => \Soli\Session\Flash::class,
         'filter'     => \Soli\Filter::class,
     ];
+
+    /**
+     * 应用初始化
+     *
+     * @param \Soli\Di\ContainerInterface $container
+     */
+    public function __construct(ContainerInterface $container = null)
+    {
+        if (!is_object($container)) {
+            $container = $this->getContainer();
+        }
+
+        foreach ($this->defaultServices as $name => $service) {
+            // 允许自定义同名的 Service 覆盖默认的 Service
+            if (!$container->has($name)) {
+                $container->setShared($name, $service);
+            }
+        }
+    }
 
     /**
      * 应用程序启动方法

@@ -4,14 +4,15 @@
  */
 namespace Soli\Console;
 
-use Soli\BaseApplication;
+use Soli\Component;
+use Soli\Di\ContainerInterface;
 
 /**
  * 命令行应用
  *
  * @property \Soli\Console\Dispatcher $dispatcher
  */
-class Application extends BaseApplication
+class Application extends Component
 {
     /**
      * 默认注册服务
@@ -19,6 +20,25 @@ class Application extends BaseApplication
     protected $defaultServices = [
         'dispatcher' => \Soli\Console\Dispatcher::class,
     ];
+
+    /**
+     * 应用初始化
+     *
+     * @param \Soli\Di\ContainerInterface $container
+     */
+    public function __construct(ContainerInterface $container = null)
+    {
+        if (!is_object($container)) {
+            $container = $this->getContainer();
+        }
+
+        foreach ($this->defaultServices as $name => $service) {
+            // 允许自定义同名的 Service 覆盖默认的 Service
+            if (!$container->has($name)) {
+                $container->setShared($name, $service);
+            }
+        }
+    }
 
     /**
      * 应用程序启动方法
