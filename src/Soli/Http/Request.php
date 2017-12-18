@@ -25,12 +25,12 @@ class Request implements ContainerAwareInterface
      *
      * @param string $name
      * @param string $filter
-     * @param mixed $defaultValue
+     * @param mixed $default
      * @return array|string
      */
-    public function get($name = null, $filter = null, $defaultValue = null)
+    public function get($name = null, $filter = null, $default = null)
     {
-        return $this->getHelper($_REQUEST, $name, $filter, $defaultValue);
+        return $this->getHelper($_REQUEST, $name, $filter, $default);
     }
 
     /**
@@ -38,12 +38,12 @@ class Request implements ContainerAwareInterface
      *
      * @param string $name
      * @param string $filter
-     * @param mixed $defaultValue
+     * @param mixed $default
      * @return array|string
      */
-    public function getQuery($name = null, $filter = null, $defaultValue = null)
+    public function getQuery($name = null, $filter = null, $default = null)
     {
-        return $this->getHelper($_GET, $name, $filter, $defaultValue);
+        return $this->getHelper($_GET, $name, $filter, $default);
     }
 
     /**
@@ -51,15 +51,15 @@ class Request implements ContainerAwareInterface
      *
      * @param string $name
      * @param string $filter
-     * @param mixed $defaultValue
+     * @param mixed $default
      * @return array|string
      */
-    public function getPost($name = null, $filter = null, $defaultValue = null)
+    public function getPost($name = null, $filter = null, $default = null)
     {
-        return $this->getHelper($_POST, $name, $filter, $defaultValue);
+        return $this->getHelper($_POST, $name, $filter, $default);
     }
 
-    public function getPut($name = null, $filter = null, $defaultValue = null)
+    public function getPut($name = null, $filter = null, $default = null)
     {
         $put = $this->putCache;
         if (empty($put)) {
@@ -67,7 +67,7 @@ class Request implements ContainerAwareInterface
             $this->putCache = $put;
         }
 
-        return $this->getHelper($put, $name, $filter, $defaultValue);
+        return $this->getHelper($put, $name, $filter, $default);
     }
 
     /**
@@ -98,12 +98,12 @@ class Request implements ContainerAwareInterface
 
     /* $_SERVER */
 
-    public function getServer($name = null, $defaultValue = null)
+    public function getServer($name = null, $default = null)
     {
         if (empty($name)) {
             return $_SERVER;
         }
-        return isset($_SERVER[$name]) ? $_SERVER[$name] : $defaultValue;
+        return isset($_SERVER[$name]) ? $_SERVER[$name] : $default;
     }
 
     public function getServerAddress()
@@ -139,12 +139,12 @@ class Request implements ContainerAwareInterface
 
     /* $_COOKIE */
 
-    public function getCookies($name = null, $defaultValue = null)
+    public function getCookies($name = null, $default = null)
     {
         if (empty($name)) {
             return $_COOKIE;
         }
-        return isset($_COOKIE[$name]) ? $_COOKIE[$name] : $defaultValue;
+        return isset($_COOKIE[$name]) ? $_COOKIE[$name] : $default;
     }
 
     public function removeCookie($name)
@@ -163,17 +163,17 @@ class Request implements ContainerAwareInterface
      * @param array $source
      * @param string $name 变量下标
      * @param string $filter Filter 中的过滤标识
-     * @param mixed $defaultValue 默认值
+     * @param mixed $default 默认值
      * @return mixed
      */
-    protected function getHelper(array $source, $name = null, $filter = null, $defaultValue = null)
+    protected function getHelper(array $source, $name = null, $filter = null, $default = null)
     {
         if (empty($name)) {
             return $source;
         }
 
         if (!isset($source[$name])) {
-            return $defaultValue;
+            return $default;
         }
 
         $value = $source[$name];

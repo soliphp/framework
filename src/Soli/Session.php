@@ -76,11 +76,11 @@ class Session
      * 获取一个 session 变量
      *
      * @param string $key
-     * @param mixed $defaultValue
+     * @param mixed $default
      * @param bool $remove 是否获取完就删除掉
      * @return mixed
      */
-    public function get($key, $defaultValue = null, $remove = false)
+    public function get($key, $default = null, $remove = false)
     {
         $key = $this->getKey($key);
 
@@ -88,7 +88,7 @@ class Session
             return $remove ? $this->remove($key) : $_SESSION[$key];
         }
 
-        return $defaultValue;
+        return $default;
     }
 
     /**
