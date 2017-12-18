@@ -18,7 +18,6 @@
     "require": {
         "php": ">=5.5.0",
         "ext-mbstring": "*",
-        "psr/log": "^1.0",
         "psr/container": "^1.0",
         "nikic/fast-route": "^1.2"
     },
@@ -29,7 +28,7 @@
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.0",
-        "phpunit/phpunit": "^5.7|^6.0"
+        "phpunit/phpunit": "^6.0"
     },
     "suggest": {
         "smarty/smarty": "Smarty templating system",
@@ -37,8 +36,7 @@
     },
     "provide": {
         "psr/container-implementation": "^1.0",
-        "psr/event-manager-implementation": "^1.0",
-        "psr/log-implementation": "^1.0"
+        "psr/event-manager-implementation": "^1.0"
     },
     "autoload": {
         "psr-4": {
