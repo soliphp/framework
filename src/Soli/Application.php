@@ -28,7 +28,7 @@ class Application extends Component
      * 默认注册服务
      */
     protected $defaultServices = [
-        'router'     => \Soli\Router\Simple::class,
+        'router'     => \Soli\Router::class,
         'dispatcher' => \Soli\Dispatcher::class,
         'request'    => \Soli\Http\Request::class,
         'response'   => \Soli\Http\Response::class,

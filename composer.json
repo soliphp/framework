@@ -19,7 +19,8 @@
         "php": ">=5.5.0",
         "ext-mbstring": "*",
         "psr/log": "^1.0",
-        "psr/container": "^1.0"
+        "psr/container": "^1.0",
+        "nikic/fast-route": "^1.2"
     },
     "replace": {
         "soliphp/di": "*",
