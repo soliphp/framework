@@ -34,4 +34,19 @@
         <log type="junit" target="/tmp/phpunit.logfile.xml" logIncompleteSkipped="false"/>
         <log type="coverage-html" target="/tmp/phpunit.report" lowUpperBound="35" highLowerBound="70"/>
     </logging>
+
+    <listeners>
+        <listener class="JohnKary\PHPUnit\Listener\SpeedTrapListener">
+            <arguments>
+                <array>
+                    <element key="slowThreshold">
+                        <integer>10</integer>
+                    </element>
+                    <element key="reportLength">
+                        <integer>8</integer>
+                    </element>
+                </array>
+            </arguments>
+        </listener>
+    </listeners>
 </phpunit>
