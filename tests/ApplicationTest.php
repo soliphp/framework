@@ -18,13 +18,25 @@ class ApplicationTest extends TestCase
         $container = new Container();
         $container->clear();
 
-        $container->set('dispatcher', function () {
-            $dispatcher = new Dispatcher();
-            $dispatcher->setNamespaceName("Soli\\Tests\\Handlers\\");
-            return $dispatcher;
+        $container->setShared('router', function () {
+            $router = new \Soli\Router();
+
+            $router->setDefaults([
+                // 控制器的命名空间
+                'namespace' => "Soli\\Tests\\Handlers\\",
+                'controller' => "index"
+            ]);
+
+            $router->map('TEST', 'index/responseInstance', ['action' => 'responseInstance']);
+            $router->map('TEST', 'index/hello/Soli', ['action' => 'hello']);
+            $router->map('TEST', 'index/responseFalse', ['action' => 'responseFalse']);
+
+            return $router;
         });
 
         $app = new Application();
+
+        $_SERVER['REQUEST_METHOD'] = 'TEST';
 
         return $app;
     }
