@@ -150,15 +150,16 @@ class Router extends Component
      */
     protected function handleDispatcherResponse($routeInfo)
     {
-        switch ($routeInfo[0]) {
-            case \FastRoute\Dispatcher::NOT_FOUND:
-                throw new Exception('Not found handler');
-            case \FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
-                $allowed = (array)$routeInfo[1];
-                throw new Exception('Method Not Allowed, allowed: ' . implode(',', $allowed));
-            case \FastRoute\Dispatcher::FOUND:
-                return $this->handleFoundRoute($routeInfo);
+        if ($routeInfo[0] == \FastRoute\Dispatcher::NOT_FOUND) {
+            throw new Exception('Not found handler');
         }
+        if ($routeInfo[0] == \FastRoute\Dispatcher::METHOD_NOT_ALLOWED) {
+            $allowed = (array)$routeInfo[1];
+            throw new Exception('Method Not Allowed, allowed: ' . implode(',', $allowed));
+        }
+
+        // \FastRoute\Dispatcher::FOUND
+        return $this->handleFoundRoute($routeInfo);
     }
 
     /**

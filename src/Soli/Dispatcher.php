@@ -51,7 +51,6 @@ class Dispatcher extends Component
 
             if ($numberDispatches >= 256) {
                 throw new Exception('Dispatcher has detected a cyclic routing causing stability problems');
-                break;
             }
 
             $this->finished = true;
@@ -71,19 +70,16 @@ class Dispatcher extends Component
             // Handler 是否存在
             if (!class_exists($handlerName)) {
                 throw new Exception('Not found handler: ' . $handlerName);
-                break;
             }
 
             // Action 是否可调用
             if (!is_callable([$handlerName, $actionName])) {
                 throw new Exception("Not found action: $handlerName->$actionName");
-                break;
             }
 
             // 参数格式是否正确
             if (!is_array($params)) {
                 throw new Exception('Action parameters must be an array');
-                break;
             }
 
             $handler = $this->container->getShared($handlerName);

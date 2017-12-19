@@ -83,7 +83,7 @@ class Request implements ContainerAwareInterface
 
     /* 请求方法 */
 
-    final public function getMethod()
+    public function getMethod()
     {
         return isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '';
     }

@@ -10,6 +10,8 @@ class Filter
     /**
      * 使用对应过滤标识进行过滤
      *
+     * 注意不要使用 string 过滤 JSON 数据，如: {"data":123} 会被过滤为 {&#34;data&#34;:123}
+     *
      * @param mixed $value
      * @param string $filter
      * @return mixed
@@ -28,7 +30,6 @@ class Filter
                 return abs(intval($value));
 
             case 'string':
-                // 注意不要使用 string 过滤 JSON 数据，如: {"data":123} 会被过滤为 {&#34;data&#34;:123}
                 return filter_var($value, FILTER_SANITIZE_STRING);
 
             case 'float':
