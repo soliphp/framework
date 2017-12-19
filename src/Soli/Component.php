@@ -62,12 +62,12 @@ class Component implements ContainerAwareInterface, EventManagerAwareInterface
     /**
      * 触发事件
      *
-     *<code>
+     *<pre>
      * $this->trigger('dispatch.beforeDispatchLoop', $data);
      *
      * $event = new Event('application.boot', $data);
      * $this->trigger($event);
-     *</code>
+     *</pre>
      *
      * @param string|\Soli\Events\EventInterface $event 事件名称或事件对象实例
      * @param mixed $data 事件相关数据

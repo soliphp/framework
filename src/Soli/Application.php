@@ -12,7 +12,7 @@ use Throwable;
 /**
  * 应用
  *
- * @property \Soli\RouterInterface $router
+ * @property \Soli\Router $router
  * @property \Soli\Dispatcher $dispatcher
  * @property \Soli\Http\Request $request
  * @property \Soli\Http\Response $response

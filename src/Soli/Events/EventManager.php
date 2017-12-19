@@ -71,12 +71,12 @@ class EventManager implements EventManagerInterface
     /**
      * 触发事件
      *
-     *<code>
+     *<pre>
      * $eventManager->trigger('dispatch.beforeDispatchLoop', $dispatcher);
      *
      * $event = new Event('application.boot', $app);
      * $eventManager->trigger($event);
-     *</code>
+     *</pre>
      *
      * @param string|EventInterface $event 事件名称或事件对象实例
      * @param object|string $target 事件来源
