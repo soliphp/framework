@@ -47,4 +47,11 @@ class ComponentTest extends TestCase
         $aComponent = $this->container->getShared(AComponent::class);
         $aComponent->undefinedProperty;
     }
+
+    public function testUndefinedPropertyReturnFalse()
+    {
+        error_reporting(0);
+        $aComponent = $this->container->getShared(AComponent::class);
+        $this->assertNull($aComponent->undefinedProperty);
+    }
 }

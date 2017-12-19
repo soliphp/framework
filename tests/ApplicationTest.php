@@ -24,11 +24,13 @@ class ApplicationTest extends TestCase
             $router->setDefaults([
                 // 控制器的命名空间
                 'namespace' => "Soli\\Tests\\Handlers\\",
-                'controller' => "index"
+                'controller' => "index",
+                'action' => "index",
+                'params' => []
             ]);
 
             $router->map('TEST', 'index/responseInstance', ['action' => 'responseInstance']);
-            $router->map('TEST', 'index/hello/Soli', ['action' => 'hello']);
+            $router->map('TEST', 'index/hello/{name}', ['action' => 'hello']);
             $router->map('TEST', 'index/responseFalse', ['action' => 'responseFalse']);
 
             return $router;

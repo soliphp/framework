@@ -14,6 +14,8 @@ class ApplicationTest extends TestCase
 {
     protected function createApplication()
     {
+        $app = new Application();
+
         $container = new Container();
         $container->remove('dispatcher');
 
@@ -22,8 +24,6 @@ class ApplicationTest extends TestCase
             $dispatcher->setNamespaceName("Soli\\Tests\\Handlers\\");
             return $dispatcher;
         });
-
-        $app = new Application($container);
 
         return $app;
     }

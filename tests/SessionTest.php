@@ -85,15 +85,6 @@ class SessionTest extends TestCase
         $this->assertFalse($this->session->has($key.'non_value'));
     }
 
-    public function setProvider()
-    {
-        return [
-            ['foo', 'bar', ['foo' => 'bar']],
-            ['foo.bar', 'too much beer', ['foo.bar' => 'too much beer']],
-            ['great', 'symfony is great', ['great' => 'symfony is great']],
-        ];
-    }
-
     /**
      * @dataProvider setProvider
      */
@@ -102,6 +93,15 @@ class SessionTest extends TestCase
         $this->session->set($key, $value);
         $this->session->remove($key);
         $this->assertFalse($this->session->has($key));
+    }
+
+    public function setProvider()
+    {
+        return [
+            ['foo', 'bar', ['foo' => 'bar']],
+            ['foo.bar', 'too much beer', ['foo.bar' => 'too much beer']],
+            ['great', 'symfony is great', ['great' => 'symfony is great']],
+        ];
     }
 
     /**
