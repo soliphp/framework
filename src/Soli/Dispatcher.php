@@ -41,7 +41,7 @@ class Dispatcher extends Component
         $returnedResponse = null;
         $this->finished = false;
 
-        if ($this->trigger('dispatch.beforeDispatchLoop') === false) {
+        if ($this->trigger('dispatcher.beforeDispatchLoop') === false) {
             return false;
         }
 
@@ -55,7 +55,7 @@ class Dispatcher extends Component
 
             $this->finished = true;
 
-            if ($this->trigger('dispatch.beforeDispatch') === false) {
+            if ($this->trigger('dispatcher.beforeDispatch') === false) {
                 continue;
             }
             // Check if the user made a forward in the listener
@@ -92,10 +92,10 @@ class Dispatcher extends Component
             // 调用 Action
             $returnedResponse = call_user_func_array([$handler, $actionName], $params);
 
-            $this->trigger('dispatch.afterDispatch', $returnedResponse);
+            $this->trigger('dispatcher.afterDispatch', $returnedResponse);
         }
 
-        $this->trigger('dispatch.afterDispatchLoop', $returnedResponse);
+        $this->trigger('dispatcher.afterDispatchLoop', $returnedResponse);
 
         return $returnedResponse;
     }

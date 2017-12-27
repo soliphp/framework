@@ -72,7 +72,7 @@ class EventManager implements EventManagerInterface
      * 触发事件
      *
      *<pre>
-     * $eventManager->trigger('dispatch.beforeDispatchLoop', $dispatcher);
+     * $eventManager->trigger('application.exception', $app);
      *
      * $event = new Event('application.boot', $app);
      * $eventManager->trigger($event);

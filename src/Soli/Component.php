@@ -63,7 +63,7 @@ class Component implements ContainerAwareInterface, EventManagerAwareInterface
      * 触发事件
      *
      *<pre>
-     * $this->trigger('dispatch.beforeDispatchLoop', $data);
+     * $this->trigger('application.exception', $data);
      *
      * $event = new Event('application.boot', $data);
      * $this->trigger($event);
