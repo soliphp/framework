@@ -27,54 +27,67 @@ class Router extends Component
     protected $dispatcher;
 
     /**
+     * Load routes config.
+     */
+    public function load(array $routesConfig)
+    {
+        foreach ($routesConfig as $route) {
+            $pattern = $route[0];
+            $handler = $route[1] ?? null;
+            $methods = $route[2] ?? '*';
+            $this->map($pattern, $handler, $methods);
+        }
+        return $this->routes;
+    }
+
+    /**
      * Add route.
      *
-     * @param string|string[] $methods 'GET' or ['GET', 'POST']
      * @param string $pattern
-     * @param array $handler
+     * @param array|string $handler
+     * @param string|string[] $methods 'GET' or ['GET', 'POST']
      */
-    public function map($methods, $pattern, array $handler)
+    public function map($pattern, $handler = null, $methods = '*')
     {
-        $this->routes[] = [
-            'methods' => $methods,
-            'pattern' => $pattern,
+        $this->routes[$pattern] = [
             'handler' => $handler,
+            'methods' => $methods,
         ];
     }
 
     public function get($pattern, $handler)
     {
-        $this->map('GET', $pattern, $handler);
+        $this->map($pattern, $handler, 'GET');
     }
 
     public function post($pattern, $handler)
     {
-        $this->map('POST', $pattern, $handler);
+        $this->map($pattern, $handler, 'POST');
     }
 
     public function put($pattern, $handler)
     {
-        $this->map('PUT', $pattern, $handler);
+        $this->map($pattern, $handler, 'PUT');
     }
 
     public function delete($pattern, $handler)
     {
-        $this->map('DELETE', $pattern, $handler);
+        $this->map($pattern, $handler, 'DELETE');
     }
 
     public function head($pattern, $handler)
     {
-        $this->map('HEAD', $pattern, $handler);
+        $this->map($pattern, $handler, 'HEAD');
     }
 
     public function trace($pattern, $handler)
     {
-        $this->map('TRACE', $pattern, $handler);
+        $this->map($pattern, $handler, 'TRACE');
     }
 
     public function options($pattern, $handler)
     {
-        $this->map('OPTIONS', $pattern, $handler);
+        $this->map($pattern, $handler, 'OPTIONS');
     }
 
     public function setDefaults(array $defaults)
@@ -136,8 +149,12 @@ class Router extends Component
     protected function createDispatcher()
     {
         return $this->dispatcher ?: \FastRoute\simpleDispatcher(function (\FastRoute\RouteCollector $r) {
-            foreach ($this->routes as $route) {
-                $r->addRoute($route['methods'], $route['pattern'], $route['handler']);
+            // 默认路由
+            if (!isset($this->routes['/'])) {
+                $this->map('/', [], '*');
+            }
+            foreach ($this->routes as $pattern => $route) {
+                $r->addRoute($route['methods'], $pattern, $route['handler']);
             }
         });
     }
@@ -170,25 +187,55 @@ class Router extends Component
      */
     protected function handleFoundRoute($routeInfo)
     {
+        $routeInfo = $this->formatRouteInfo($routeInfo);
+
         $handler = $routeInfo[1];
         $params  = $routeInfo[2];
 
-        $handler = array_merge($params, $handler);
-
         // 存储控制器、方法及参数
-        if (isset($handler['namespace'])) {
+        if ($handler['namespace']) {
             $this->namespaceName = $handler['namespace'];
         }
 
-        if (isset($handler['controller'])) {
+        if ($handler['controller']) {
             $this->controllerName = $handler['controller'];
         }
 
-        if (isset($handler['action'])) {
+        if ($handler['action']) {
             $this->actionName = $handler['action'];
         }
 
         $this->params = $params;
+    }
+
+    protected function formatRouteInfo($routeInfo)
+    {
+        $handler = $routeInfo[1];
+        $params  = $routeInfo[2];
+
+        // $router->map('PUT', '/users/{id}', 'user::update');
+        // $router->map('PUT', '/users/{id}', 'App\Controllers\User::update');
+        if (is_string($handler)) {
+            $tmp = explode('::', $handler);
+            $handler = [
+                'controller' => $tmp[0] ?? null,
+                'action'     => $tmp[1] ?? null,
+            ];
+        }
+
+        $routeInfo[1] = [
+            'namespace'  => $handler['namespace'] ?? $params['namespace'] ?? null,
+            'controller' => $handler['controller'] ?? $params['controller'] ?? null,
+            'action'     => $handler['action'] ?? $params['action'] ?? null,
+        ];
+
+        unset($params['namespace']);
+        unset($params['controller']);
+        unset($params['action']);
+
+        $routeInfo[2] = $params;
+
+        return $routeInfo;
     }
 
     protected function getRewriteUri()

@@ -38,10 +38,10 @@ class RouterTest extends TestCase
     {
         $this->router = $this->container->get(Router::class);
 
-        $this->router->map('GET', '/hello/{name}', $this->routeData());
+        $this->router->map('/hello/{name}', $this->routeHandler(), 'GET');
     }
 
-    protected function routeData()
+    protected function routeHandler()
     {
         return [
             'namespace' => "Soli\\Tests\\Handlers\\",
@@ -63,9 +63,9 @@ class RouterTest extends TestCase
         $this->initRouter();
         $this->router->handle();
 
-        $this->assertEquals($this->routeData()['namespace'], $this->router->getNamespaceName());
-        $this->assertEquals($this->routeData()['controller'], $this->router->getControllerName());
-        $this->assertEquals($this->routeData()['action'], $this->router->getActionName());
+        $this->assertEquals($this->routeHandler()['namespace'], $this->router->getNamespaceName());
+        $this->assertEquals($this->routeHandler()['controller'], $this->router->getControllerName());
+        $this->assertEquals($this->routeHandler()['action'], $this->router->getActionName());
 
         $this->assertEquals('soliphp', $this->router->getParams()['name']);
     }

@@ -29,9 +29,9 @@ class ApplicationTest extends TestCase
                 'params' => []
             ]);
 
-            $router->map('TEST', 'index/responseInstance', ['action' => 'responseInstance']);
-            $router->map('TEST', 'index/hello/{name}', ['action' => 'hello']);
-            $router->map('TEST', 'index/responseFalse', ['action' => 'responseFalse']);
+            $router->map('index/responseInstance', ['action' => 'responseInstance'], 'TEST');
+            $router->map('index/hello/{name}', ['action' => 'hello'], 'TEST');
+            $router->map('index/responseFalse', ['action' => 'responseFalse'], 'TEST');
 
             return $router;
         });
