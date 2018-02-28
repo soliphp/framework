@@ -160,7 +160,7 @@ class Application extends Component
         return $view->render($template);
     }
 
-    protected function handleException(Exception $e)
+    protected function handleException(Throwable $e)
     {
         $returnedResponse = $this->trigger('application.exception', $e);
         if ($returnedResponse instanceof Response) {

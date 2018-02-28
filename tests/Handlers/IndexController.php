@@ -45,4 +45,9 @@ class IndexController extends Controller
     public function normal()
     {
     }
+
+    public function typeError(int $id)
+    {
+        return $id;
+    }
 }

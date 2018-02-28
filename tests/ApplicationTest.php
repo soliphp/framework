@@ -33,6 +33,7 @@ class ApplicationTest extends TestCase
             $router->map('index/hello/{name}', ['action' => 'hello'], 'TEST');
             $router->map('index/responseFalse', ['action' => 'responseFalse'], 'TEST');
             $router->map('index/normal', ['action' => 'normal'], 'TEST');
+            $router->map('index/typeError/{id}', ['action' => 'typeError'], 'TEST');
 
             return $router;
         });
@@ -132,6 +133,19 @@ class ApplicationTest extends TestCase
         $app->handle('index/notfoundxxxxxxx');
     }
 
+    public function testCatchThrowable()
+    {
+        $app = $this->createApplication();
+
+        $exceptionResponseContent = 'Handled Exception: TypeError';
+
+        $this->setEventManager($app, $exceptionResponseContent);
+
+        $response = $app->handle('index/typeError/should-be-int');
+
+        $this->assertEquals($exceptionResponseContent, $response->getContent());
+    }
+
     /**
      * @param Application $app
      * @param Response|string $response 响应内容
@@ -142,7 +156,7 @@ class ApplicationTest extends TestCase
 
         $eventManager->attach(
             'application.exception',
-            function (Event $event, Application $app, \Exception $exception) use ($response) {
+            function (Event $event, Application $app, \Throwable $exception) use ($response) {
                 // exception handling
                 $app->dispatcher->forward([
                     'namespace'  => "Soli\\Tests\\Handlers\\",
