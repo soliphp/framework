@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "php": ">=5.5.0",
+        "php": ">=7.0",
         "ext-mbstring": "*",
         "psr/container": "^1.0",
         "nikic/fast-route": "^1.3"
@@ -42,12 +42,6 @@
         "psr-4": {
             "Soli\\Tests\\": "tests/"
         }
-    },
-    "scripts": {
-        "test": [
-            "phpunit",
-            "phpcs"
-        ]
     },
     "minimum-stability": "dev"
 }
