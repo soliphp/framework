@@ -55,6 +55,7 @@ class Router extends Component
         ];
     }
 
+    // @codeCoverageIgnoreStart
     public function get($pattern, $handler)
     {
         $this->map($pattern, $handler, 'GET');
@@ -89,6 +90,7 @@ class Router extends Component
     {
         $this->map($pattern, $handler, 'OPTIONS');
     }
+    // @codeCoverageIgnoreEnd
 
     public function setDefaults(array $defaults)
     {
@@ -213,8 +215,8 @@ class Router extends Component
         $handler = $routeInfo[1];
         $params  = $routeInfo[2];
 
-        // $router->map('PUT', '/users/{id}', 'user::update');
-        // $router->map('PUT', '/users/{id}', 'App\Controllers\User::update');
+        // $router->map('/users/{id}', 'user::update', 'PUT');
+        // $router->map('/users/{id}', 'App\Controllers\User::update', 'PUT');
         if (is_string($handler)) {
             $tmp = explode('::', $handler);
             $handler = [

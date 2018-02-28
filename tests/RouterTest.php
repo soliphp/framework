@@ -39,6 +39,7 @@ class RouterTest extends TestCase
         $this->router = $this->container->get(Router::class);
 
         $this->router->map('/hello/{name}', $this->routeHandler(), 'GET');
+        $this->router->map('/index/{page}', 'Soli\Tests\Handlers\Index::index', 'GET');
     }
 
     protected function routeHandler()
@@ -50,9 +51,23 @@ class RouterTest extends TestCase
         ];
     }
 
-    //public function testDefaults()
-    //{
-    //}
+    public function testStringHandler()
+    {
+        $_GET['_uri'] = '/index/99';
+
+        $this->setRequestStub();
+
+        $this->initRouter();
+        $this->router->handle();
+
+        $handler = $this->routeHandler();
+
+        $this->assertNull($this->router->getNamespaceName());
+        $this->assertEquals("Soli\\Tests\\Handlers\\Index", $this->router->getControllerName());
+        $this->assertEquals('index', $this->router->getActionName());
+
+        $this->assertEquals('99', $this->router->getParams()['page']);
+    }
 
     public function testGetters()
     {
@@ -63,9 +78,11 @@ class RouterTest extends TestCase
         $this->initRouter();
         $this->router->handle();
 
-        $this->assertEquals($this->routeHandler()['namespace'], $this->router->getNamespaceName());
-        $this->assertEquals($this->routeHandler()['controller'], $this->router->getControllerName());
-        $this->assertEquals($this->routeHandler()['action'], $this->router->getActionName());
+        $handler = $this->routeHandler();
+
+        $this->assertEquals($handler['namespace'], $this->router->getNamespaceName());
+        $this->assertEquals($handler['controller'], $this->router->getControllerName());
+        $this->assertEquals($handler['action'], $this->router->getActionName());
 
         $this->assertEquals('soliphp', $this->router->getParams()['name']);
     }
