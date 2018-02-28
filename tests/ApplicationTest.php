@@ -32,6 +32,7 @@ class ApplicationTest extends TestCase
             $router->map('index/responseInstance', ['action' => 'responseInstance'], 'TEST');
             $router->map('index/hello/{name}', ['action' => 'hello'], 'TEST');
             $router->map('index/responseFalse', ['action' => 'responseFalse'], 'TEST');
+            $router->map('index/normal', ['action' => 'normal'], 'TEST');
 
             return $router;
         });
@@ -64,6 +65,14 @@ class ApplicationTest extends TestCase
     {
         $app = $this->createApplication();
         $response = $app->handle('index/responseFalse');
+
+        $this->assertNull($response->getContent());
+    }
+
+    public function testResponseNormal()
+    {
+        $app = $this->createApplication();
+        $response = $app->handle('index/normal');
 
         $this->assertNull($response->getContent());
     }

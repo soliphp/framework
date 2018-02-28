@@ -81,14 +81,10 @@ class Response implements ContainerAwareInterface
      * @param int $code 状态码
      * @param string $message 状态描述
      */
-    public function __construct($content = null, $code = 200, $message = null)
+    public function __construct(string $content = null, int $code = 200, string $message = null)
     {
-        if ($content !== null) {
-            $this->content = $content;
-        }
-        if ($code !== null) {
-            $this->setStatusCode($code, $message);
-        }
+        $this->content = $content;
+        $this->setStatusCode($code, $message);
     }
 
     /**
@@ -99,7 +95,7 @@ class Response implements ContainerAwareInterface
      *
      * @return $this
      */
-    public function setStatusCode($code, $message = null)
+    public function setStatusCode(int $code, string $message = null)
     {
         $this->code = $code;
         $this->message = $message;
@@ -156,9 +152,9 @@ class Response implements ContainerAwareInterface
      *
      * @return $this
      */
-    public function setContent($content = null)
+    public function setContent(string $content = null)
     {
-        $this->content = (string)$content;
+        $this->content = $content;
 
         return $this;
     }
