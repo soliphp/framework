@@ -29,11 +29,15 @@ class ApplicationTest extends TestCase
                 'params' => []
             ]);
 
-            $router->map('index/responseInstance', ['action' => 'responseInstance'], 'TEST');
-            $router->map('index/hello/{name}', ['action' => 'hello'], 'TEST');
-            $router->map('index/responseFalse', ['action' => 'responseFalse'], 'TEST');
-            $router->map('index/normal', ['action' => 'normal'], 'TEST');
-            $router->map('index/typeError/{id}', ['action' => 'typeError'], 'TEST');
+            $routesConfig = [
+                ['index/responseInstance', ['action' => 'responseInstance'], 'TEST'],
+                ['index/hello/{name}', ['action' => 'hello'], 'TEST'],
+                ['index/responseFalse', ['action' => 'responseFalse'], 'TEST'],
+                ['index/normal', ['action' => 'normal'], 'TEST'],
+                ['index/typeError/{id}', ['action' => 'typeError'], 'TEST'],
+            ];
+
+            $router->load($routesConfig);
 
             return $router;
         });
