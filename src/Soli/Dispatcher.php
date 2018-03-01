@@ -106,7 +106,6 @@ class Dispatcher extends Component
      * @param array $forward {
      *   @var string namespace
      *   @var string controller
-     *   @var string task
      *   @var string action
      *   @var array  params
      * }
@@ -119,10 +118,6 @@ class Dispatcher extends Component
 
         if (isset($forward['controller'])) {
             $this->handlerName = $forward['controller'];
-        } else {
-            if (isset($forward['task'])) {
-                $this->handlerName = $forward['task'];
-            }
         }
 
         if (isset($forward['action'])) {
