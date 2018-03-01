@@ -62,6 +62,7 @@ class FilterTest extends TestCase
 
     /**
      * @expectedException \Exception
+     * @expectedExceptionMessageRegExp /Sanitize filter \w+ is not supported/
      */
     public function testInvalidArgumentException()
     {

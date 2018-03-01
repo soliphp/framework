@@ -61,6 +61,7 @@ class EventManagerTest extends TestCase
 
     /**
      * @expectedException \Exception
+     * @expectedExceptionMessage Invalid event type
      */
     public function testTriggerInvalidEventType()
     {
@@ -78,6 +79,7 @@ class EventManagerTest extends TestCase
 
     /**
      * @expectedException \Exception
+     * @expectedExceptionMessage Invalid event type
      */
     public function testTriggerInvalidEventType2()
     {

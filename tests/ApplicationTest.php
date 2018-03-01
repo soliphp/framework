@@ -127,13 +127,13 @@ class ApplicationTest extends TestCase
 
     /**
      * @expectedException \Exception
+     * @expectedExceptionMessage Not found handler
      */
     public function testUncatchExceptionEvent3()
     {
         $app = $this->createApplication();
 
-        $this->setEventManager($app, null);
-
+        // Router 抛出 "Not found handler" 异常
         $app->handle('index/notfoundxxxxxxx');
     }
 

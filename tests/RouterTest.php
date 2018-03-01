@@ -89,6 +89,7 @@ class RouterTest extends TestCase
 
     /**
      * @expectedException \Exception
+     * @expectedExceptionMessage Not found handler
      */
     public function testNotFoundException()
     {
@@ -101,6 +102,7 @@ class RouterTest extends TestCase
 
     /**
      * @expectedException \Exception
+     * @expectedExceptionMessageRegExp /Method Not Allowed, allowed:.+/
      */
     public function testMethodNotAllowedException()
     {

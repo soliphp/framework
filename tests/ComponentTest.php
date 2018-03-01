@@ -41,6 +41,7 @@ class ComponentTest extends TestCase
 
     /**
      * @expectedException \PHPUnit\Framework\Exception
+     * @expectedExceptionMessageRegExp /Access to undefined property .+/
      */
     public function testUndefinedPropertyException()
     {
