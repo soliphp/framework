@@ -35,7 +35,7 @@ class Application extends Component
         foreach ($this->defaultServices as $name => $service) {
             // 允许自定义同名的 Service 覆盖默认的 Service
             if (!$container->has($name)) {
-                $container->setShared($name, $service);
+                $container->set($name, $service);
             }
         }
     }

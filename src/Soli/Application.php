@@ -22,7 +22,7 @@ use Throwable;
  */
 class Application extends Component
 {
-    const VERSION = '1.3.0';
+    const VERSION = '1.5.0';
 
     /**
      * 默认注册服务
@@ -51,7 +51,7 @@ class Application extends Component
         foreach ($this->defaultServices as $name => $service) {
             // 允许自定义同名的 Service 覆盖默认的 Service
             if (!$container->has($name)) {
-                $container->setShared($name, $service);
+                $container->set($name, $service);
             }
         }
     }
@@ -66,8 +66,6 @@ class Application extends Component
     {
         try {
             return $this->handleInternal($uri);
-        } catch (Exception $e) {
-            return $this->handleException($e);
         } catch (Throwable $e) {
             return $this->handleException($e);
         }

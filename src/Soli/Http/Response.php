@@ -233,7 +233,7 @@ class Response implements ContainerAwareInterface
     {
         // disable view
         if ($this->container->has('view')) {
-            $view = $this->container->getShared('view');
+            $view = $this->container->get('view');
             if ($view instanceof ViewInterface) {
                 $view->disable();
             }

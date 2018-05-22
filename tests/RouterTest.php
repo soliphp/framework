@@ -2,24 +2,16 @@
 
 namespace Soli\Tests;
 
-use PHPUnit\Framework\TestCase;
-use Soli\Di\Container;
 use Soli\Router;
 use Soli\Http\Request;
 
 class RouterTest extends TestCase
 {
-    /** @var \Soli\Di\ContainerInterface */
-    protected $container;
-
     protected $router;
 
     public function setUp()
     {
-        $container = new Container();
-        $container->clear();
-
-        $this->container = $container;
+        static::$container->clear();
     }
 
     protected function setRequestStub($method = 'GET')
@@ -31,12 +23,12 @@ class RouterTest extends TestCase
         $stub->method('getMethod')
             ->willReturn($method);
 
-        $this->container->set('request', $stub);
+        static::$container->set('request', $stub);
     }
 
     protected function initRouter()
     {
-        $this->router = $this->container->get(Router::class);
+        $this->router = static::$container->get(Router::class);
 
         $this->router->map('/hello/{name}', $this->routeHandler(), 'GET');
         $this->router->map('/index/{page}', 'Soli\Tests\Handlers\Index::index', 'GET');

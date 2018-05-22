@@ -2,33 +2,25 @@
 
 namespace Soli\Tests;
 
-use PHPUnit\Framework\TestCase;
-
-use Soli\Di\Container;
 use Soli\Di\ContainerInterface;
 
 use Soli\Tests\Data\AComponent;
 
 class ComponentTest extends TestCase
 {
-    /** @var \Soli\Di\ContainerInterface */
-    protected $container;
-
     public function setUp()
     {
-        $container = new Container();
+        $container = static::$container;
         $container->remove('someService');
 
         $ao = new \ArrayObject();
         $ao->name = 'Injectable';
         $container['someService'] = $ao;
-
-        $this->container = $container;
     }
 
     public function testInjectionAware()
     {
-        $aComponent = $this->container->getShared(AComponent::class);
+        $aComponent = static::$container->get(AComponent::class);
 
         // 获取容器
         $container = $aComponent->container;
@@ -45,14 +37,14 @@ class ComponentTest extends TestCase
      */
     public function testUndefinedPropertyException()
     {
-        $aComponent = $this->container->getShared(AComponent::class);
+        $aComponent = static::$container->get(AComponent::class);
         $aComponent->undefinedProperty;
     }
 
     public function testUndefinedPropertyReturnFalse()
     {
         error_reporting(0);
-        $aComponent = $this->container->getShared(AComponent::class);
+        $aComponent = static::$container->get(AComponent::class);
         $this->assertNull($aComponent->undefinedProperty);
     }
 }

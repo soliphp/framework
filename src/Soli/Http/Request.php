@@ -179,7 +179,7 @@ class Request implements ContainerAwareInterface
         $value = $source[$name];
         if ($filter !== null) {
             if (!is_object($this->filter)) {
-                $this->filter = $this->container->getShared('filter');
+                $this->filter = $this->container->get('filter');
             }
             $value = $this->filter->sanitize($value, $filter);
         }

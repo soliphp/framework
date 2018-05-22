@@ -15,10 +15,4 @@ namespace Soli;
  */
 class Controller extends Component
 {
-    /**
-     * Controller constructor.
-     */
-    final public function __construct()
-    {
-    }
 }

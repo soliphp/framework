@@ -2,11 +2,8 @@
 
 namespace Soli\Tests;
 
-use PHPUnit\Framework\TestCase;
-
 use Soli\Application;
-use Soli\Di\Container;
-use Soli\Dispatcher;
+use Soli\Router;
 use Soli\Events\EventManager;
 use Soli\Events\Event;
 use Soli\Http\Response;
@@ -15,11 +12,11 @@ class ApplicationTest extends TestCase
 {
     protected function createApplication()
     {
-        $container = new Container();
+        $container = static::$container;
         $container->clear();
 
-        $container->setShared('router', function () {
-            $router = new \Soli\Router();
+        $container->set('router', function () {
+            $router = new Router();
 
             $router->setDefaults([
                 // 控制器的命名空间

@@ -82,7 +82,7 @@ class Dispatcher extends Component
                 throw new Exception('Action parameters must be an array');
             }
 
-            $handler = $this->container->getShared($handlerName);
+            $handler = $this->container->get($handlerName);
 
             // 初始化
             if (method_exists($handler, 'initialize')) {

@@ -41,7 +41,7 @@ class Component implements ContainerAwareInterface, EventManagerAwareInterface
     public function getContainer()
     {
         if ($this->diContainer === null) {
-            $this->diContainer = Container::instance() ?: new Container;
+            $this->diContainer = Container::instance() ?: new Container();
         }
         return $this->diContainer;
     }
@@ -95,7 +95,7 @@ class Component implements ContainerAwareInterface, EventManagerAwareInterface
         }
 
         if ($container->has($name)) {
-            $service = $container->getShared($name);
+            $service = $container->get($name);
             // 将找到的服务添加到属性, 以便下次直接调用
             $this->$name = $service;
             return $service;

@@ -2,36 +2,36 @@
 
 namespace Soli\Tests\Console;
 
-use PHPUnit\Framework\TestCase;
+use Soli\Tests\TestCase;
 
 use Soli\Console\Application;
 use Soli\Console\Dispatcher;
-use Soli\Di\Container;
 use Soli\Events\EventManager;
 use Soli\Events\Event;
 
 class ApplicationTest extends TestCase
 {
-    protected function createApplication()
+    protected function setUp()
     {
-        $app = new Application();
-
-        $container = new Container();
-        $container->remove('dispatcher');
-
-        $container->set('dispatcher', function () {
+        static::$container->set('dispatcher', function () {
             $dispatcher = new Dispatcher();
             $dispatcher->setNamespaceName("Soli\\Tests\\Handlers\\");
             return $dispatcher;
         });
+    }
 
-        return $app;
+    protected function createApplication()
+    {
+        return new Application();
     }
 
     public function testSimple()
     {
         $app = $this->createApplication();
         $_SERVER['argv'] = ['console', 'task', 'some params'];
+
+        //var_dump($app);
+        //var_dump($app->dispatcher);
         $output = $app->handle();
 
         $this->assertEquals('Hello, Soli.', $output);

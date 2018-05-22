@@ -2,9 +2,6 @@
 
 namespace Soli\Tests;
 
-use PHPUnit\Framework\TestCase;
-
-use Soli\Di\Container;
 use Soli\Dispatcher;
 use Soli\Events\EventManager;
 use Soli\Events\Event;
@@ -16,7 +13,7 @@ class DispatcherTest extends TestCase
 
     public function setUp()
     {
-        $container = new Container;
+        $container = static::$container;
         $container->clear();
 
         // 把 dispatcher 扔进容器，供 TestController 使用
@@ -26,7 +23,7 @@ class DispatcherTest extends TestCase
             return $dispatcher;
         });
 
-        $this->dispatcher = $container->getShared('dispatcher');
+        $this->dispatcher = $container->get('dispatcher');
     }
 
     public function testDispatch()
