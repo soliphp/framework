@@ -84,11 +84,6 @@ class Dispatcher extends Component
 
             $handler = $this->container->get($handlerName);
 
-            // 初始化
-            if (method_exists($handler, 'initialize')) {
-                $handler->initialize();
-            }
-
             // 调用 Action
             $returnedResponse = call_user_func_array([$handler, $actionName], $params);
 
