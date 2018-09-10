@@ -23,11 +23,11 @@ MVC、[依赖注入]、[事件管理]、[闪存消息]、[模版引擎]（[Twig]
 [Phalcon]: https://phalconphp.com/
 [Twig]: http://twig.sensiolabs.org/
 [Smarty]: http://www.smarty.net/
-[依赖注入]: http://soli-api.aboutc.net/Soli/Di.html
-[事件管理]: http://soli-api.aboutc.net/Soli/Events.html
-[闪存消息]: http://soli-api.aboutc.net/Soli/Session/Flash.html
-[模版引擎]: http://soli-api.aboutc.net/Soli/View/Engine.html
-[命令行应用]: http://soli-api.aboutc.net/Soli/Console.html
+[依赖注入]: http://api.soliphp.com/Soli/Di.html
+[事件管理]: http://api.soliphp.com/Soli/Events.html
+[闪存消息]: http://api.soliphp.com/Soli/Session/Flash.html
+[模版引擎]: http://api.soliphp.com/Soli/View/Engine.html
+[命令行应用]: http://api.soliphp.com/Soli/Console.html
 [https://github.com/ueaner/soliphp]: https://github.com/ueaner/soliphp
-[API 参考]: http://soli-api.aboutc.net/
+[API 参考]: http://api.soliphp.com/
 [MIT License]: LICENSE
