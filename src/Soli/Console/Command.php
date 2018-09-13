@@ -13,10 +13,4 @@ use Soli\Component;
  */
 class Command extends Component
 {
-    /**
-     * Task constructor.
-     */
-    final public function __construct()
-    {
-    }
 }
