@@ -1,8 +1,7 @@
 Soli PHP Framework
 --------------------
 
-Soli 是一个轻量级的 PHP 框架，参考了 [Phalcon]
-框架的设计，意在松耦合、可扩展、简洁易用。
+Soli 是一个轻量级的 PHP 框架，框架的设计，意在松耦合、可扩展、简洁易用。
 
 ## 提供的功能
 
@@ -20,7 +19,6 @@ MVC、[依赖注入]、[事件管理]、[闪存消息]、[模版引擎]（[Twig]
 
 [MIT License]
 
-[Phalcon]: https://phalconphp.com/
 [Twig]: http://twig.sensiolabs.org/
 [Smarty]: http://www.smarty.net/
 [依赖注入]: http://api.soliphp.com/Soli/Di.html

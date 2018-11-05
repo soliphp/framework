@@ -22,16 +22,16 @@ class ConfigTest extends TestCase
 
         $config->set('database', [
             'master' => [
-                'host'     => '127.0.0.1',
-                'port'     => '3306',
+                'host' => '127.0.0.1',
+                'port' => '3306',
             ],
         ]);
         $this->assertEquals('127.0.0.1', $config['database']['master']['host']);
         $this->assertEquals('3306', $config->database->master->port);
 
         $config->set('database.master', [
-            'host'     => '192.168.1.100',
-            'port'     => '3100',
+            'host' => '192.168.1.100',
+            'port' => '3100',
         ]);
         $this->assertEquals('192.168.1.100', $config['database']['master']['host']);
         $this->assertEquals('3100', $config->database->master->port);
@@ -42,8 +42,8 @@ class ConfigTest extends TestCase
         $this->assertEquals('demo', $config->database->master->dbname);
 
         $config->set('database.slave', [
-            'host'     => '192.168.1.200',
-            'port'     => '3200',
+            'host' => '192.168.1.200',
+            'port' => '3200',
         ]);
         $this->assertEquals('192.168.1.200', $config['database']['slave']['host']);
         $this->assertEquals('3200', $config->database->slave->port);
@@ -139,8 +139,8 @@ class ConfigTest extends TestCase
         $config = Config::__set_state([
             'database' => Config::__set_state([
                 'master' => [
-                    'host'     => '127.0.0.1',
-                    'port'     => '3306',
+                    'host' => '127.0.0.1',
+                    'port' => '3306',
                 ],
                 'charset' => 'utf8',
             ])

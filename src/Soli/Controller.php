@@ -7,11 +7,8 @@ namespace Soli;
 /**
  * 控制器基类
  *
- * @property \Soli\Dispatcher $dispatcher
- * @property \Soli\Http\Request $request
- * @property \Soli\Http\Response $response
- * @property \Soli\Session $session
- * @property \Soli\Session\Flash $flash
+ * @property \Soli\DispatcherInterface $dispatcher
+ * @property \Soli\RouterInterface $router
  */
 class Controller extends Component
 {

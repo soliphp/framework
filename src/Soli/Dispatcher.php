@@ -7,15 +7,21 @@ namespace Soli;
 /**
  * 调度器
  */
-class Dispatcher extends Component
+class Dispatcher extends Component implements DispatcherInterface
 {
     protected $namespaceName = null;
     protected $handlerName = null;
     protected $actionName = null;
-    protected $params = null;
+    protected $params = [];
 
     protected $handlerSuffix = 'Controller';
     protected $actionSuffix = null;
+
+    const ON_BEFORE_DISPATCH_LOOP = 'dispatcher.beforeDispatchLoop';
+    const ON_AFTER_DISPATCH_LOOP  = 'dispatcher.afterDispatchLoop';
+
+    const ON_BEFORE_DISPATCH      = 'dispatcher.beforeDispatch';
+    const ON_AFTER_DISPATCH       = 'dispatcher.afterDispatch';
 
     /**
      * dispatch loop 是否结束
@@ -23,14 +29,6 @@ class Dispatcher extends Component
      * @var bool
      */
     protected $finished = null;
-
-    /**
-     * BaseDispatcher constructor.
-     */
-    public function __construct()
-    {
-        $this->params = [];
-    }
 
     /**
      * 执行调度
@@ -41,23 +39,20 @@ class Dispatcher extends Component
         $returnedResponse = null;
         $this->finished = false;
 
-        if ($this->trigger('dispatcher.beforeDispatchLoop') === false) {
-            return false;
-        }
+        $this->trigger(Dispatcher::ON_BEFORE_DISPATCH_LOOP);
 
         // dispatch loop
         while (!$this->finished) {
             ++$numberDispatches;
 
             if ($numberDispatches >= 256) {
-                throw new Exception('Dispatcher has detected a cyclic routing causing stability problems');
+                throw new \LogicException('Dispatcher has detected a cyclic routing causing stability problems');
             }
 
             $this->finished = true;
 
-            if ($this->trigger('dispatcher.beforeDispatch') === false) {
-                continue;
-            }
+            $this->trigger(Dispatcher::ON_BEFORE_DISPATCH);
+
             // Check if the user made a forward in the listener
             if ($this->finished === false) {
                 continue;
@@ -69,30 +64,30 @@ class Dispatcher extends Component
 
             // Handler 是否存在
             if (!class_exists($handlerName)) {
-                throw new Exception('Not found handler: ' . $handlerName);
+                throw new \InvalidArgumentException('Handler not found: ' . $handlerName);
             }
 
             // Action 是否可调用
             if (!is_callable([$handlerName, $actionName])) {
-                throw new Exception("Not found action: $handlerName->$actionName");
-            }
-
-            // 参数格式是否正确
-            if (!is_array($params)) {
-                throw new Exception('Action parameters must be an array');
+                throw new \InvalidArgumentException("Action is not callable: $handlerName->$actionName()");
             }
 
             $handler = $this->container->get($handlerName);
 
             // 调用 Action
-            $returnedResponse = call_user_func_array([$handler, $actionName], $params);
+            $returnedResponse = $this->callAction($handler, $actionName, $params);
 
-            $this->trigger('dispatcher.afterDispatch', $returnedResponse);
+            $this->trigger(Dispatcher::ON_AFTER_DISPATCH, $returnedResponse);
         }
 
-        $this->trigger('dispatcher.afterDispatchLoop', $returnedResponse);
+        $this->trigger(Dispatcher::ON_AFTER_DISPATCH_LOOP, $returnedResponse);
 
         return $returnedResponse;
+    }
+
+    protected function callAction($handler, string $actionName, array $params = [])
+    {
+        return call_user_func_array([$handler, $actionName], $params);
     }
 
     /**
@@ -100,7 +95,7 @@ class Dispatcher extends Component
      *
      * @param array $forward {
      *   @var string namespace
-     *   @var string controller
+     *   @var string handler
      *   @var string action
      *   @var array  params
      * }
@@ -108,50 +103,50 @@ class Dispatcher extends Component
     public function forward(array $forward)
     {
         if (isset($forward['namespace'])) {
-            $this->namespaceName = $forward['namespace'];
+            $this->setNamespaceName($forward['namespace']);
         }
 
-        if (isset($forward['controller'])) {
-            $this->handlerName = $forward['controller'];
+        if (isset($forward['handler'])) {
+            $this->setHandlerName($forward['handler']);
         }
 
         if (isset($forward['action'])) {
-            $this->actionName = $forward['action'];
+            $this->setActionName($forward['action']);
         }
 
         if (isset($forward['params'])) {
-            $this->params = $forward['params'];
+            $this->setParams($forward['params']);
         }
 
         $this->finished = false;
     }
 
-    public function setNamespaceName($namespaceName)
+    public function setNamespaceName(string $namespaceName)
     {
         $this->namespaceName = $namespaceName;
     }
 
-    public function getNamespaceName()
+    public function getNamespaceName(): string
     {
         return $this->namespaceName;
     }
 
-    public function setControllerName($handlerName)
+    public function setHandlerName(string $handlerName)
     {
         $this->handlerName = $handlerName;
     }
 
-    public function getControllerName()
+    public function getHandlerName(): string
     {
         return $this->handlerName;
     }
 
-    public function setActionName($actionName)
+    public function setActionName(string $actionName)
     {
         $this->actionName = $actionName;
     }
 
-    public function getActionName()
+    public function getActionName(): string
     {
         return $this->actionName;
     }
@@ -161,7 +156,7 @@ class Dispatcher extends Component
         $this->params = $params;
     }
 
-    public function getParams()
+    public function getParams(): array
     {
         return $this->params;
     }

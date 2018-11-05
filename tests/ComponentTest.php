@@ -2,33 +2,95 @@
 
 namespace Soli\Tests;
 
+use PHPUnit\Framework\TestCase;
+
+use Soli\Component;
+use Soli\Di\Container;
 use Soli\Di\ContainerInterface;
 
-use Soli\Tests\Data\AComponent;
+use Soli\Events\Event;
+use Soli\Events\EventManager;
 
 class ComponentTest extends TestCase
 {
-    public function setUp()
-    {
-        $container = static::$container;
-        $container->remove('someService');
+    /** @var \Soli\Di\ContainerInterface */
+    protected static $container;
 
-        $ao = new \ArrayObject();
-        $ao->name = 'Injectable';
-        $container['someService'] = $ao;
+    public static function setUpBeforeClass()
+    {
+        static::$container = new Container();
+    }
+
+    public static function tearDownAfterClass()
+    {
+        static::$container = null;
     }
 
     public function testInjectionAware()
     {
-        $aComponent = static::$container->get(AComponent::class);
+        $component = static::$container->get(Component::class);
 
         // 获取容器
-        $container = $aComponent->container;
+        $container = $component->getContainer();
+        $this->assertInstanceOf(ContainerInterface::class, $container);
+    }
+
+    public function testGetSomeServiceInContainer()
+    {
+        $container = static::$container;
+
+        $component = $container->get(Component::class);
+
+        $container->set('someService', function () {
+            $someService = new \ArrayObject();
+            $someService->name = 'Injectable';
+            return $someService;
+        });
+
         // 获取容器中的服务
-        $s = $aComponent->someService;
+        $someService = $component->someService;
+        $this->assertEquals('Injectable', $someService->name);
+    }
+
+    public function testGetContainer()
+    {
+        $component = new Component();
+        $container = $component->getContainer();
 
         $this->assertInstanceOf(ContainerInterface::class, $container);
-        $this->assertEquals('Injectable', $s->name);
+    }
+
+    public function testAccessContainerProperty()
+    {
+        $component = static::$container->get(Component::class);
+        $this->assertInstanceOf(ContainerInterface::class, $component->container);
+    }
+
+    public function testEvents()
+    {
+        $uid = 100;
+        $this->expectOutputString($uid);
+
+        $container = static::$container;
+        $container->set('events', EventManager::class);
+
+        $user = new class() extends Component {
+            const ON_LOGIN = 'login';
+            public function __construct()
+            {
+                // 监听登录事件
+                $this->listen(self::ON_LOGIN, function (Event $event) {
+                    echo $event->getData();
+                });
+            }
+            public function login($uid)
+            {
+                // 触发登录事件
+                $this->trigger(self::ON_LOGIN, $uid);
+            }
+        };
+
+        $user->login($uid);
     }
 
     /**
@@ -37,14 +99,14 @@ class ComponentTest extends TestCase
      */
     public function testUndefinedPropertyException()
     {
-        $aComponent = static::$container->get(AComponent::class);
-        $aComponent->undefinedProperty;
+        $component = static::$container->get(Component::class);
+        $component->undefinedProperty;
     }
 
     public function testUndefinedPropertyReturnFalse()
     {
         error_reporting(0);
-        $aComponent = static::$container->get(AComponent::class);
-        $this->assertNull($aComponent->undefinedProperty);
+        $component = static::$container->get(component::class);
+        $this->assertNull($component->undefinedProperty);
     }
 }
