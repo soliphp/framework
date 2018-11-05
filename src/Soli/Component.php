@@ -7,38 +7,26 @@ namespace Soli;
 use Soli\Di\Container;
 use Soli\Di\ContainerInterface;
 use Soli\Di\ContainerAwareInterface;
-use Soli\Events\EventManagerInterface;
-use Soli\Events\EventManagerAwareInterface;
 
 /**
  * 组件基类
  *
- * 通过 $this->{serviceName} 访问属性的方式访问所有注册到容器中的服务
- *
  * @property \Soli\Di\ContainerInterface $container
- * @property \Soli\Events\EventManagerInterface $eventManager
+ * @property \Soli\Events\EventManagerInterface $events
  */
-class Component implements ContainerAwareInterface, EventManagerAwareInterface
+class Component implements ContainerAwareInterface
 {
     /**
      * @var \Soli\Di\ContainerInterface
      */
     protected $diContainer;
 
-    /**
-     * @var \Soli\Events\EventManagerInterface
-     */
-    protected $eventManager;
-
     public function setContainer(ContainerInterface $container)
     {
         $this->diContainer = $container;
     }
 
-    /**
-     * @return \Soli\Di\ContainerInterface
-     */
-    public function getContainer()
+    public function getContainer(): ContainerInterface
     {
         if ($this->diContainer === null) {
             $this->diContainer = Container::instance() ?: new Container();
@@ -46,26 +34,24 @@ class Component implements ContainerAwareInterface, EventManagerAwareInterface
         return $this->diContainer;
     }
 
-    public function setEventManager(EventManagerInterface $eventManager)
-    {
-        $this->eventManager = $eventManager;
-    }
-
     /**
-     * @return \Soli\Events\EventManagerInterface
+     * 监听某个事件
+     *
+     * @param string $name 事件名称
+     * @param object $listener 匿名函数|对象实例
      */
-    public function getEventManager()
+    public function listen($name, $listener)
     {
-        return $this->eventManager;
+        $this->events->attach($name, $listener);
     }
 
     /**
      * 触发事件
      *
      *<pre>
-     * $this->trigger('application.exception', $data);
+     * $this->trigger(App::ON_BOOT, $data);
      *
-     * $event = new Event('application.boot', $data);
+     * $event = new Event(App::ON_FINISH, $data);
      * $this->trigger($event);
      *</pre>
      *
@@ -76,11 +62,11 @@ class Component implements ContainerAwareInterface, EventManagerAwareInterface
      */
     public function trigger($event, $data = null)
     {
-        return is_object($this->eventManager) ? $this->eventManager->trigger($event, $this, $data) : null;
+        return $this->events->trigger($event, $this, $data);
     }
 
     /**
-     * 获取容器本身，或者获取容器中的某个服务
+     * 获取容器中的某个服务
      *
      * @param string $name
      * @return \Soli\Di\ContainerInterface|mixed
@@ -96,8 +82,7 @@ class Component implements ContainerAwareInterface, EventManagerAwareInterface
 
         if ($container->has($name)) {
             $service = $container->get($name);
-            // 将找到的服务添加到属性, 以便下次直接调用
-            $this->$name = $service;
+            $this->{$name} = $service;
             return $service;
         }
 

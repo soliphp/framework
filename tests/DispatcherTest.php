@@ -2,7 +2,11 @@
 
 namespace Soli\Tests;
 
+use PHPUnit\Framework\TestCase;
+
 use Soli\Dispatcher;
+
+use Soli\Di\Container;
 use Soli\Events\EventManager;
 use Soli\Events\Event;
 
@@ -11,35 +15,61 @@ class DispatcherTest extends TestCase
     /** @var \Soli\Dispatcher */
     protected $dispatcher;
 
+    /** @var \Soli\Di\ContainerInterface */
+    protected static $container;
+
+    public static function setUpBeforeClass()
+    {
+        static::$container = new Container();
+    }
+
+    public static function tearDownAfterClass()
+    {
+        static::$container = null;
+    }
+
     public function setUp()
     {
-        $container = static::$container;
-        $container->clear();
+        static::$container->set('events', EventManager::class);
+        static::$container->set('dispatcher', Dispatcher::class);
 
-        // 把 dispatcher 扔进容器，供 TestController 使用
-        $container->set('dispatcher', function () use ($container) {
-            $dispatcher = new Dispatcher();
-            $dispatcher->setNamespaceName("\\Soli\\Tests\\Handlers\\");
-            return $dispatcher;
-        });
+        $this->dispatcher = static::$container->get('dispatcher');
+        $this->dispatcher->setNamespaceName("\\Soli\\Tests\\Handlers\\");
+    }
 
-        $this->dispatcher = $container->get('dispatcher');
+    protected function prepare(array $argv)
+    {
+        if (isset($argv['namespace'])) {
+            $this->dispatcher->setNamespaceName($argv['namespace']);
+        }
+
+        if (isset($argv['handler'])) {
+            $this->dispatcher->setHandlerName($argv['handler']);
+        }
+
+        if (isset($argv['action'])) {
+            $this->dispatcher->setActionName($argv['action']);
+        }
+
+        if (isset($argv['params'])) {
+            $this->dispatcher->setParams($argv['params']);
+        }
     }
 
     public function testDispatch()
     {
-        $args = [
-            'index',
-            'hello',
-            'Soli',
+        $argv = [
+            'handler' => 'test',
+            'action' => 'hello',
+            'params' => ['Soli'],
         ];
 
-        $this->prepare($args);
+        $this->prepare($argv);
 
         $returnedResponse = $this->dispatcher->dispatch();
 
         $this->assertEquals("\\Soli\\Tests\\Handlers\\", $this->dispatcher->getNamespaceName());
-        $this->assertEquals('index', $this->dispatcher->getControllerName());
+        $this->assertEquals('test', $this->dispatcher->getHandlerName());
         $this->assertEquals('hello', $this->dispatcher->getActionName());
         $this->assertEquals('Soli', $this->dispatcher->getParams()[0]);
 
@@ -48,96 +78,28 @@ class DispatcherTest extends TestCase
 
     public function testForward()
     {
-        // forward to test/index
-        $args = [
-            'index',
-            'forwardToHello',
+        $argv = [
+            'handler' => 'test',
+            'action' => 'forwardToHello',
         ];
 
-        $this->prepare($args);
+        $this->prepare($argv);
 
         $returnedResponse = $this->dispatcher->dispatch();
 
         $this->assertEquals('Hello, Soli.', $returnedResponse);
     }
 
-    protected function prepare(array $args)
+    public function testEventBeforeDispatchCallForward()
     {
-        // 设置控制器、方法及参数
-        if (isset($args[0])) {
-            $this->dispatcher->setControllerName($args[0]);
-        }
-        if (isset($args[1])) {
-            $this->dispatcher->setActionName($args[1]);
-        }
-        if (isset($args[2])) {
-            $this->dispatcher->setParams(array_slice($args, 2));
-        }
-    }
+        $events = static::$container->get('events');
 
-    public function testBeforeDispatchLoopEvent()
-    {
-        $eventManager = new EventManager();
-
-        $eventManager->attach(
-            'dispatcher.beforeDispatchLoop',
-            function (Event $event, Dispatcher $dispatcher) {
-                // 返回 false 拦截调度器继续执行
-                return false;
-            }
-        );
-
-        $this->dispatcher->setEventManager($eventManager);
-
-        $args = [
-            'index',
-            'hello',
-        ];
-
-        $this->prepare($args);
-
-        $returnedResponse = $this->dispatcher->dispatch();
-
-        $this->assertFalse($returnedResponse);
-    }
-
-    public function testBeforeDispatchEvent()
-    {
-        $eventManager = new EventManager();
-
-        $eventManager->attach(
-            'dispatcher.beforeDispatch',
-            function (Event $event, Dispatcher $dispatcher) {
-                // 返回 false 拦截调度器本次执行
-                return false;
-            }
-        );
-
-        $this->dispatcher->setEventManager($eventManager);
-
-        $args = [
-            'index',
-            'hello',
-        ];
-
-        $this->prepare($args);
-
-        $returnedResponse = $this->dispatcher->dispatch();
-
-        // 未调度任何Action，被beforeDispatch拦截
-        $this->assertNull($returnedResponse);
-    }
-
-    public function testCallForwardInBeforeDispatchEvent()
-    {
-        $eventManager = new EventManager();
-
-        $eventManager->attach(
-            'dispatcher.beforeDispatch',
+        $events->attach(
+            Dispatcher::ON_BEFORE_DISPATCH,
             function (Event $event, Dispatcher $dispatcher) {
                 $logged = $dispatcher->getParams()[0] ?? null;
                 if ($logged == 'Not Logged') {
-                    return $this->dispatcher->forward([
+                    $dispatcher->forward([
                         'action' => 'hello',
                         'params' => ['Soli'],
                     ]);
@@ -145,18 +107,17 @@ class DispatcherTest extends TestCase
             }
         );
 
-        $this->dispatcher->setEventManager($eventManager);
-
-        $args = [
-            'index',
-            'hello',
-            'Not Logged',
+        $argv = [
+            'handler' => 'test',
+            'action' => 'hello',
+            'params' => ['Not Logged'],
         ];
 
-        $this->prepare($args);
+        $this->prepare($argv);
 
         $returnedResponse = $this->dispatcher->dispatch();
 
+        // forward to hello
         $this->assertEquals('Hello, Soli.', $returnedResponse);
     }
 
@@ -166,73 +127,72 @@ class DispatcherTest extends TestCase
      */
     public function testCyclicRouting()
     {
-        $eventManager = new EventManager();
+        $events = static::$container->get('events');
 
-        $eventManager->attach(
-            'dispatcher.beforeDispatch',
+        $events->attach(
+            Dispatcher::ON_BEFORE_DISPATCH,
             function (Event $event, Dispatcher $dispatcher) {
                 // 始终返回当前Action
-                return $this->dispatcher->forward([
+                return $dispatcher->forward([
                     'action' => $dispatcher->getActionName(),
                 ]);
             }
         );
 
-        $this->dispatcher->setEventManager($eventManager);
-
-        $args = [
-            'index',
-            'index',
+        $argv = [
+            'handler' => 'test',
+            'action' => 'index',
         ];
 
-        $this->prepare($args);
+        $this->prepare($argv);
 
-        $returnedResponse = $this->dispatcher->dispatch();
+        $this->dispatcher->dispatch();
     }
 
     /**
      * @expectedException \Exception
-     * @expectedExceptionMessageRegExp /Not found handler: .+/
+     * @expectedExceptionMessageRegExp /Handler not found: .+/
      */
-    public function testNotFoundHandler()
+    public function testHandlerNotFound()
     {
-        $args = [
-            'notfoundhandlerxxxxxxx',
+        $argv = [
+            'handler' => 'HandlerNotFound_xxx',
         ];
 
-        $this->prepare($args);
+        $this->prepare($argv);
 
-        $returnedResponse = $this->dispatcher->dispatch();
+        $this->dispatcher->dispatch();
     }
 
     /**
      * @expectedException \Exception
-     * @expectedExceptionMessageRegExp /Not found action: .+/
+     * @expectedExceptionMessageRegExp /Action is not callable: .+/
      */
-    public function testNotFoundAction()
+    public function testActionIsNotCallable()
     {
-        $args = [
-            'index',
-            'notfoundactionxxxxxxx'
+        $argv = [
+            'handler' => 'test',
+            'action' => 'ActionIsNotCallable_xxx'
         ];
 
-        $this->prepare($args);
+        $this->prepare($argv);
 
-        $returnedResponse = $this->dispatcher->dispatch();
+        $this->dispatcher->dispatch();
     }
 
     /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage Action parameters must be an array
+     * @expectedException \TypeError
+     * @expectedExceptionMessage must be of the type array, string given
      */
     public function testActionParametersMustBeAnArray()
     {
         $this->dispatcher->forward([
-            'controller' => 'index',
+            'namespace' => "\\Soli\\Tests\\Handlers\\",
+            'handler' => 'test',
             'action' => 'index',
-            'params' => 'should-be-array',
+            'params' => 'must-be-array',
         ]);
 
-        $returnedResponse = $this->dispatcher->dispatch();
+        $this->dispatcher->dispatch();
     }
 }
