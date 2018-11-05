@@ -75,7 +75,7 @@ class Dispatcher extends Component implements DispatcherInterface
             $handler = $this->container->get($handlerName);
 
             // 调用 Action
-            $returnedResponse = call_user_func_array([$handler, $actionName], $params);
+            $returnedResponse = $this->callAction($handler, $actionName, $params);
 
             $this->trigger(Dispatcher::ON_AFTER_DISPATCH, $returnedResponse);
         }
@@ -83,6 +83,11 @@ class Dispatcher extends Component implements DispatcherInterface
         $this->trigger(Dispatcher::ON_AFTER_DISPATCH_LOOP, $returnedResponse);
 
         return $returnedResponse;
+    }
+
+    protected function callAction($handler, string $actionName, array $params = [])
+    {
+        return call_user_func_array([$handler, $actionName], $params);
     }
 
     /**
