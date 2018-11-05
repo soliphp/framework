@@ -6,7 +6,7 @@ language: php
 env:
   global:
     - COMPOSER_ARGS="--ansi --prefer-dist --no-interaction --no-suggest --no-progress --optimize-autoloader"
-    - DEPS="phpunit/phpunit squizlabs/php_codesniffer php-coveralls/php-coveralls"
+    - DEPS="phpunit/phpunit squizlabs/php_codesniffer php-coveralls/php-coveralls johnkary/phpunit-speedtrap"
 
 git:
   depth: 3
