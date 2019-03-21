@@ -64,7 +64,7 @@ class Dispatcher extends Component implements DispatcherInterface
 
             // Handler 是否存在
             if (!class_exists($handlerName)) {
-                throw new \InvalidArgumentException('Handler not found: ' . $handlerName);
+                throw new \InvalidArgumentException("Handler not found: $handlerName");
             }
 
             // Action 是否可调用

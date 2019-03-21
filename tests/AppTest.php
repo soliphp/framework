@@ -79,6 +79,16 @@ class AppTest extends TestCase
         $this->assertEquals('Hello, Soli.', $response);
     }
 
+    public function testServiceInstanceEqualConstructInjectInstance()
+    {
+        $argv = [
+            'handler' => 'test',
+            'action' => 'serviceInstanceEqualConstructInjectInstance',
+        ];
+        $isSameInstance = $this->app->handle($argv);
+        $this->assertTrue($isSameInstance);
+    }
+
     /**
      * @expectedException \TypeError
      * @expectedExceptionMessage must be of the type integer, string given

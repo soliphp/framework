@@ -12,7 +12,7 @@ namespace Soli;
  */
 class App extends Component
 {
-    const VERSION = '2.0.0-dev';
+    const VERSION = '2.0.1';
 
     const ON_BOOT      = 'app.boot';
     const ON_FINISH    = 'app.finish';
@@ -23,8 +23,8 @@ class App extends Component
      */
     protected $coreServices = [
         //'router'     => \Soli\RouterInterface::class,
-        'dispatcher' => \Soli\Dispatcher::class,
-        'events'     => \Soli\Events\EventManager::class,
+        'dispatcher' => [\Soli\Dispatcher::class, \Soli\DispatcherInterface::class],
+        'events'     => [\Soli\Events\EventManager::class, \Soli\Events\EventManagerInterface::class],
     ];
 
     /**
@@ -40,10 +40,14 @@ class App extends Component
     {
         $container = $this->getContainer();
 
-        foreach ($this->coreServices as $name => $service) {
-            // 允许自定义同名的 Service 覆盖默认的 Service
-            if (!$container->has($name)) {
-                $container->set($name, $service);
+        foreach ($this->coreServices as $name => $services) {
+            foreach ($services as $service) {
+                // 允许自定义同名的 Service 覆盖默认的 Service
+                if (!$container->has($name)) {
+                    $container->set($name, $service);
+                }
+                // 添加 alias 确保 __construct 通过类名注入的对象和通过服务名称取到的是同一个
+                $container->alias($service, $name);
             }
         }
     }
