@@ -11,15 +11,16 @@ use Soli\DispatcherInterface;
 class TestController extends Component
 {
     protected $isSameInstance;
+    protected $constructInjectDispatcher;
 
     public function __construct(DispatcherInterface $dispatcher)
     {
-        $this->isSameInstance = $dispatcher === $this->dispatcher;
+        $this->constructInjectDispatcher = $dispatcher;
     }
 
     public function serviceInstanceEqualConstructInjectInstance()
     {
-        return $this->isSameInstance;
+        return $this->constructInjectDispatcher === $this->dispatcher;
     }
 
     public function index()

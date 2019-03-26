@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Soli\Dispatcher;
 
 use Soli\Di\Container;
+use Soli\DispatcherInterface;
 use Soli\Events\EventManager;
 use Soli\Events\Event;
 
@@ -32,6 +33,7 @@ class DispatcherTest extends TestCase
     {
         static::$container->set('events', EventManager::class);
         static::$container->set('dispatcher', Dispatcher::class);
+        static::$container->alias(DispatcherInterface::class, 'dispatcher');
 
         $this->dispatcher = static::$container->get('dispatcher');
         $this->dispatcher->setNamespaceName("\\Soli\\Tests\\Handlers\\");
