@@ -57,7 +57,7 @@ class Component implements ContainerAwareInterface
      *
      * @param string|\Soli\Events\EventInterface $event 事件名称或事件对象实例
      * @param mixed $data 事件相关数据
-     * @return mixed
+     * @return bool 是否执行了当前事件的监听器
      *
      */
     public function trigger($event, $data = null)
