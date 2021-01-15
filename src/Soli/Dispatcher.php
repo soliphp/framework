@@ -67,12 +67,12 @@ class Dispatcher extends Component implements DispatcherInterface
                 throw new \InvalidArgumentException("Handler not found: $handlerName");
             }
 
+            $handler = $this->container->get($handlerName);
+
             // Action 是否可调用
-            if (!is_callable([$handlerName, $actionName])) {
+            if (!is_callable([$handler, $actionName])) {
                 throw new \InvalidArgumentException("Action is not callable: $handlerName->$actionName()");
             }
-
-            $handler = $this->container->get($handlerName);
 
             // 调用 Action
             $returnedResponse = $this->callAction($handler, $actionName, $params);
